@@ -1,0 +1,55 @@
+.formContainer {
+  height: 100vh;
+  width: 100vw;
+  background-color: azure;
+  display: grid;
+  place-content: center;
+}
+
+.formBody {
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 0.8rem;
+  box-shadow: 5px 5px 10px lightgrey;
+}
+
+.formInput {
+  width: 18rem;
+  margin: 0.6rem 0;
+  height: 2.5rem;
+  padding-left: 0.8rem;
+}
+
+div:nth-child(2) {
+  padding-bottom: 0.5rem;
+}
+
+button {
+  width: 100%;
+  background-color: royalblue;
+  height: 2.5rem;
+  outline: none;
+  border: none;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.5s ease;
+}
+
+button:hover {
+  background-color: rgb(95, 134, 251);
+  transition: all 0.5s ease;
+}
+
+.formButton {
+  padding-top: 1rem;
+  border-top: 1px solid grey;
+}
+
+.error {
+  color: red;
+}
+
+h2 {
+  margin: 0;
+}

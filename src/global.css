@@ -1,0 +1,26 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+a {
+  color: white !important;
+  font-weight: bolder;
+}
+
+.toastMessage {
+  height: 40px !important;
+  width: 300px !important;
+  display: block;
+}
+
+.landingContainer {
+  display: grid;
+  place-content: center;
+  height: 400px;
+}
