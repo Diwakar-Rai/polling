@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import Navbar from "../components/Navbar";
+import { GlobalContext } from "../components/GlobalContext";
 
 const PresentationRating = () => {
+  var { globalData, setGlobalData } = useContext(GlobalContext);
   var navigate = useNavigate();
   var [individualData, setIndividualData] = useState("");
   var [presentationSubject, setSubject] = useState("");
@@ -22,6 +24,8 @@ const PresentationRating = () => {
         //   `http://localhost:8080/user/findById?userId=${id}`
         // );
         setIndividualData(data.data);
+        setGlobalData(data.data);
+        console.log(globalData);
         // console.log(data);
         // console.log(individualData);
       };
@@ -42,12 +46,14 @@ const PresentationRating = () => {
       user: individualData,
     };
     // await axios.post(`http://localhost:8080/presentation`, payload);
-    await axios.post(`${address}/presentation`, payload);
+    let { data } = await axios.post(`${address}/presentation`, payload);
     // console.log("sucessfully data sent");
     toast.success("Success!", {
       className: "toastMessage",
     });
-    navigate("/adminTable");
+    setGlobalData(data);
+    // console.log(globalData);
+    navigate("/voting");
   };
 
   var handleSubject = e => {

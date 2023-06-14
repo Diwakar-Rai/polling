@@ -1,52 +1,49 @@
 import React, { useContext, useEffect, useState } from "react";
-import Navbar from "../components/Navbar";
+import { GlobalContext } from "../components/GlobalContext";
 import axios from "axios";
-import { LoginContext } from "../components/LoginContext";
-import { IdContext } from "../components/IdContext";
+import Navbar from "../components/Navbar";
 
-const Comments = () => {
-  var { loginData, setLoginData } = useContext(LoginContext);
-  var { idData, setIdData } = useContext(IdContext);
-  var [comment, setComment] = useState("");
-
+const AdminDetails = () => {
+  var [adminData, setAdminData] = useState("");
   var address = process.env.REACT_APP_IP_ADDRESS;
+  var { globalData, setGlobalData } = useContext(GlobalContext);
+
+  var id = globalData.data.user.userId;
 
   useEffect(() => {
+    var payload = {
+      presentationSubject: globalData.data.presentationSubject,
+      presentationTopic: globalData.data.presentationTopic,
+      presentationDay: globalData.data.presentationDay,
+    };
+    console.log(payload);
     var fetchData = async () => {
-      var payload = {
-        presentationSubject: loginData[0].reviewSubject,
-        presentationTopic: loginData[0].reviewTopic,
-        presentationDay: loginData[0].reviewDate,
-      };
       let { data } = await axios.post(
-        `${address}/notification/getComments?presenterId=${idData}`,
+        `${address}/notification/getComments?presenterId=${id}`,
         payload
       );
-
-      setComment(data.data);
+      setAdminData(data.data);
     };
     fetchData();
   }, []);
-
   return (
     <div>
       <Navbar />
-      <h1 className="text-center mt-3">Feedback for Presentation</h1>
       <div className="row mt-3">
         <div className="col-2"></div>
         <div className="col-8">
-          <table className="table table-striped table-hover border border-1">
+          <table className="table table-hover table-striped border border-1">
             <thead>
               <tr>
-                <th>Trainee Name</th>
+                <th>Voter Name</th>
                 <th>Score</th>
-                <th>Feedback</th>
+                <th>Comments</th>
               </tr>
             </thead>
             <tbody>
-              {comment &&
-                comment.length &&
-                comment.map((ele, index) => {
+              {adminData &&
+                adminData.length &&
+                adminData.map((ele, index) => {
                   return (
                     <React.Fragment key={index}>
                       <tr>
@@ -66,4 +63,4 @@ const Comments = () => {
   );
 };
 
-export default Comments;
+export default AdminDetails;

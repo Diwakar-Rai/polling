@@ -1,22 +1,7 @@
 import React from "react";
-import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
-import { toast } from "react-toastify";
-const Navbar = () => {
-  var navigate = useNavigate();
-  const handleCalc = async () => {
-    var { data } = await axios.get("http://localhost:8080/review/calcReview");
-    console.log(data);
-    toast.success("Review Calculated", {
-      className: "toastMessage",
-    });
-  };
-
-  const handleLogOut = () => {
-    localStorage.removeItem("loginAdmin");
-    navigate("/");
-  };
+const TraineeNavbar = () => {
   return (
     <div>
       <nav className="navbar navbar-expand-lg bg-dark px-5">
@@ -38,33 +23,21 @@ const Navbar = () => {
                 <Link
                   className="nav-link active pe-4"
                   aria-current="page"
-                  to="/adminLanding"
+                  to="/traineeLanding"
                 >
                   Home
                 </Link>
               </li>
-              <li className="nav-item">
-                <Link
-                  className="nav-link"
-                  to="/adminLanding"
-                  onClick={handleCalc}
-                >
-                  Calculate Score
-                </Link>
-              </li>
             </ul>
           </div>
-          <div className="d-flex align-items-center">
+          <div>
             <FaUserCircle
               style={{ fontSize: 40, color: "white", cursor: "pointer" }}
             />
 
-            <button
-              className="btn btn-danger h-100 mx-3"
-              onClick={handleLogOut}
-            >
-              LogOut
-            </button>
+            <Link to="/" className="btn btn-danger mx-3">
+              Logout
+            </Link>
           </div>
         </div>
       </nav>
@@ -72,4 +45,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default TraineeNavbar;

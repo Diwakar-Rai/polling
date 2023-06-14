@@ -13,7 +13,10 @@ const AdminLanding = () => {
             <p>
               Click on the Button below to assign presentation to the trainee
             </p>
-            <Link className="btn btn-primary px-5 py-3 w-100">
+            <Link
+              className="btn btn-primary px-5 py-3 w-100"
+              to="/livePresentation"
+            >
               Assign Presentations <MdAssignmentAdd style={{ fontSize: 30 }} />
             </Link>
           </div>

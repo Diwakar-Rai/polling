@@ -10,13 +10,14 @@ const IndividualTrainee = () => {
 
   useEffect(() => {
     var fetchData = async () => {
-      let { data } = await axios.get(`${address}/user/findById?userId=${id}`);
-      // let { data } = await axios.get(
-      //   `http://localhost:8080/user/findById?userId=${id}`
-      // );
+      try {
+        let { data } = await axios.get(`${address}/user/findById?userId=${id}`);
 
-      setIndividualData(data.data);
-      // console.log(individualData);
+        setIndividualData(data.data);
+        // console.log(data);
+      } catch (error) {
+        console.log(error);
+      }
     };
     fetchData();
   }, []);

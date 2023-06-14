@@ -12,14 +12,11 @@ const Review = () => {
   var [review, setReview] = useState();
   var { id } = useParams();
   setIdData(id);
-  // console.log(idData);
+
   var address = process.env.REACT_APP_IP_ADDRESS;
 
   useEffect(() => {
     var fetchData = async () => {
-      // var { data } = await axios.get(
-      //   `http://localhost:8080/review?userId=${id}`
-      // );
       var { data } = await axios.get(`${address}/review?userId=${id}`);
 
       setReview(data.data);

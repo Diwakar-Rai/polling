@@ -5,7 +5,7 @@ import { LoginContext } from "../components/LoginContext";
 import Navbar from "./../components/Navbar";
 const AdminTable = () => {
   let [allUserData, setAllUserData] = useState();
-  let { loginData, setLoginData } = useContext(LoginContext);
+  // let { loginData, setLoginData } = useContext(LoginContext);
 
   var address = process.env.REACT_APP_IP_ADDRESS;
 
@@ -35,7 +35,7 @@ const AdminTable = () => {
                 <th scope="col">Name</th>
                 <th scope="col">Email</th>
                 <th scope="col">Phone</th>
-                <th scope="col">Presentation</th>
+                <th scope="col">Reviews</th>
               </tr>
             </thead>
             <tbody className="table-striped">
@@ -48,14 +48,14 @@ const AdminTable = () => {
                         <td>{ele.userName}</td>
                         <td>{ele.userEmail}</td>
                         <td>{ele.userPhoneNumber}</td>
-                        <td>
+                        {/* <td>
                           <Link
                             to={`/presentation/${ele.userId}`}
                             className="btn btn-primary"
                           >
                             Assign Presentation
                           </Link>
-                        </td>
+                        </td> */}
                         <td>
                           <Link
                             to={`/review/${ele.userId}`}

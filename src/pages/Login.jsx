@@ -2,57 +2,36 @@ import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Styles from "./Login.module.css";
 import axios from "axios";
-import { GlobalContext } from "../components/GlobalContext";
 import { LoginContext } from "../components/LoginContext";
+import { GlobalContext } from "../components/GlobalContext";
 const Login = () => {
   const { globalData, setGlobalData } = useContext(GlobalContext);
   const { loginData, setLoginData } = useContext(LoginContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  // const [resdata, setResData] = useState("");
-  const [errors, setErrors] = useState({});
+  // console.log(loginData);
 
   var address = process.env.REACT_APP_IP_ADDRESS;
   var navigate = useNavigate();
   const handleSubmit = e => {
     e.preventDefault();
 
-    // Perform form validation
-    const validationErrors = {};
-
-    if (!email) {
-      validationErrors.email = "Email is required";
-    }
-
-    if (!password) {
-      validationErrors.password = "Password is required";
-    }
-
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
-    }
-
     var fetchData = async () => {
       try {
         var { data } = await axios.post(
           `${address}/user/login?email=${email}&password=${password}`
         );
-        // var { data } = await axios.post(
-        //   `http://localhost:8080/user/login?email=${email}&password=${password}`
-        // );
 
         setGlobalData(data);
-        // setLoginData(true);
-        // console.log(data);
-        if (data.data.role === "Admin") {
-          setLoginData(true);
+
+        if (data.data.role === "ADMIN") {
+          window.localStorage.setItem("loginAdmin", true);
+          var adminLogin = localStorage.getItem("loginAdmin");
+          setLoginData(adminLogin);
           navigate("/adminLanding");
-        } else if (data.data.role === "Trainee") {
-          setLoginData(true);
-          navigate("/greeting");
+        } else if (data.data.role === "TRAINEE") {
+          navigate("/traineeLanding");
         } else {
-          setLoginData(false);
           navigate("/");
         }
       } catch (error) {
