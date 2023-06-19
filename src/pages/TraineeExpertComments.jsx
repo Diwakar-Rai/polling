@@ -1,19 +1,22 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
 import TraineeNavbar from "../components/TraineeNavbar";
 
-const TraineeComments = () => {
+const TraineeExpertComments = () => {
   var [comments, setComments] = useState("");
-  var { id } = useParams();
+
+  let { id } = useParams();
+
   var address = process.env.REACT_APP_IP_ADDRESS;
+
   useEffect(() => {
     var fetchData = async () => {
       try {
         let { data } = await axios.get(
-          `${address}/notification/persenterFeedBack?reviewId=${id}`
+          `${address}/notification/expertiseFeedBack?reviewId=${id}`
         );
-        console.log("presenter feedback", data);
+        console.log("Expert Feedback", data);
         setComments(data.data);
       } catch (error) {
         console.log(error);
@@ -24,6 +27,7 @@ const TraineeComments = () => {
   return (
     <div>
       <TraineeNavbar />
+
       <h1 className="text-center mt-2">Comments</h1>
 
       <div className="row mt-3">
@@ -32,6 +36,7 @@ const TraineeComments = () => {
           <table className="table table-striped table-hover border border-1">
             <thead>
               <tr>
+                <th>Expert Name</th>
                 <th>Score</th>
                 <th>Comments</th>
               </tr>
@@ -42,6 +47,7 @@ const TraineeComments = () => {
                   return (
                     <React.Fragment key={index}>
                       <tr>
+                        <td>{ele.voterName}</td>
                         <td>{ele.score}</td>
                         <td>{ele.comment}</td>
                       </tr>
@@ -60,4 +66,4 @@ const TraineeComments = () => {
   );
 };
 
-export default TraineeComments;
+export default TraineeExpertComments;

@@ -5,8 +5,9 @@ import { Link } from "react-router-dom";
 
 const TraineeReviews = () => {
   var [reviewData, setReviewData] = useState("");
-  var { globalData, setGlobalData } = useContext(GlobalContext);
-  var id = globalData.data.userId;
+
+  let localId = JSON.parse(sessionStorage.getItem("traineeData"));
+  let id = localId.userId;
   var address = process.env.REACT_APP_IP_ADDRESS;
   useEffect(() => {
     var fetchData = async () => {
@@ -36,8 +37,7 @@ const TraineeReviews = () => {
               </tr>
             </thead>
             <tbody>
-              {reviewData &&
-                reviewData.length &&
+              {reviewData && reviewData.length ? (
                 reviewData.map((ele, index) => {
                   return (
                     <React.Fragment key={index}>
@@ -51,13 +51,22 @@ const TraineeReviews = () => {
                             to={`/traineeComments/${ele.reviewId}`}
                             className="btn btn-primary"
                           >
-                            Comments
+                            Trainee Comments
+                          </Link>
+                          <Link
+                            to={`/expertCommentsTrainee/${ele.reviewId}`}
+                            className="btn btn-primary ms-2"
+                          >
+                            Expert Comments
                           </Link>
                         </td>
                       </tr>
                     </React.Fragment>
                   );
-                })}
+                })
+              ) : (
+                <h5>No data to display</h5>
+              )}
             </tbody>
           </table>
         </div>

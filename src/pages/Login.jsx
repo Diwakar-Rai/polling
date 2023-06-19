@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Styles from "./Login.module.css";
 import axios from "axios";
+
 import { LoginContext } from "../components/LoginContext";
 import { GlobalContext } from "../components/GlobalContext";
 const Login = () => {
@@ -9,8 +10,11 @@ const Login = () => {
   const { loginData, setLoginData } = useContext(LoginContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
   // console.log(loginData);
-
   var address = process.env.REACT_APP_IP_ADDRESS;
   var navigate = useNavigate();
   const handleSubmit = e => {
@@ -23,14 +27,20 @@ const Login = () => {
         );
 
         setGlobalData(data);
-
+        debugger;
         if (data.data.role === "ADMIN") {
-          window.localStorage.setItem("loginAdmin", true);
-          var adminLogin = localStorage.getItem("loginAdmin");
-          setLoginData(adminLogin);
+          localStorage.setItem("loginAdmin", true);
+          sessionStorage.setItem("adminData", JSON.stringify(data.data));
           navigate("/adminLanding");
         } else if (data.data.role === "TRAINEE") {
+          localStorage.setItem("traineeLogin", true);
+          sessionStorage.setItem("traineeData", JSON.stringify(data.data));
           navigate("/traineeLanding");
+        } else if (data.data.role === "EXPERTISE") {
+          localStorage.setItem("loginAdmin", true);
+          sessionStorage.setItem("expertLogin", true);
+          sessionStorage.setItem("expertData", JSON.stringify(data.data));
+          navigate("/expertLanding");
         } else {
           navigate("/");
         }
@@ -59,10 +69,10 @@ const Login = () => {
           {/* {errors.email && <div className={Styles.error}>{errors.email}</div>} */}
         </div>
 
-        <div>
+        <div className="formInputDiv">
           {/* <label for="pass">Password:</label> */}
           <input
-            type="password"
+            type={showPassword ? "text" : "password"}
             value={password}
             onChange={e => setPassword(e.target.value)}
             id="pass"
@@ -70,11 +80,15 @@ const Login = () => {
             placeholder="Enter Password"
             name="password"
           />
-          {/* {errors.password && (
-            <div className={Styles.error}>{errors.password}</div>
-          )} */}
         </div>
-
+        <div className="m-0 d-flex justify-content-end">
+          <p
+            style={{ fontSize: 10, cursor: "pointer" }}
+            onClick={togglePasswordVisibility}
+          >
+            {showPassword ? "Hide Password" : "Show Password"}
+          </p>
+        </div>
         <div className={Styles.formButton}>
           <button type="submit">Login</button>
         </div>

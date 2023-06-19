@@ -4,28 +4,12 @@ import axios from "axios";
 import Navbar from "../components/Navbar";
 
 const AdminDetails = () => {
-  var [adminData, setAdminData] = useState("");
-  var address = process.env.REACT_APP_IP_ADDRESS;
-  var { globalData, setGlobalData } = useContext(GlobalContext);
+  // var [adminData, setAdminData] = useState("");
+  // var address = process.env.REACT_APP_IP_ADDRESS;
 
-  var id = globalData.data.user.userId;
+  let presentationData = JSON.parse(sessionStorage.getItem("presComm"));
+  let adminData = presentationData.comments;
 
-  useEffect(() => {
-    var payload = {
-      presentationSubject: globalData.data.presentationSubject,
-      presentationTopic: globalData.data.presentationTopic,
-      presentationDay: globalData.data.presentationDay,
-    };
-    console.log(payload);
-    var fetchData = async () => {
-      let { data } = await axios.post(
-        `${address}/notification/getComments?presenterId=${id}`,
-        payload
-      );
-      setAdminData(data.data);
-    };
-    fetchData();
-  }, []);
   return (
     <div>
       <Navbar />

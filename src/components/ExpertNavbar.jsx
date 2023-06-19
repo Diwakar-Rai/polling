@@ -1,13 +1,13 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
-const TraineeNavbar = () => {
-  let expert = sessionStorage.getItem("expertLogin");
+const ExpertNavbar = () => {
   const navigate = useNavigate();
   const handleClick = () => {
-    sessionStorage.removeItem("traineeData");
+    sessionStorage.removeItem("expertData");
+    sessionStorage.removeItem("expertLogin");
+    localStorage.removeItem("loginAdmin");
     localStorage.removeItem("traineeData");
-    localStorage.removeItem("traineeLogin");
     navigate("/");
   };
   return (
@@ -31,7 +31,7 @@ const TraineeNavbar = () => {
                 <Link
                   className="nav-link active pe-4"
                   aria-current="page"
-                  to={expert === "true" ? "/expertLanding" : "/traineeLanding"}
+                  to="/expertLanding"
                 >
                   Home
                 </Link>
@@ -53,4 +53,4 @@ const TraineeNavbar = () => {
   );
 };
 
-export default TraineeNavbar;
+export default ExpertNavbar;

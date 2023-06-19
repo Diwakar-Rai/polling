@@ -5,6 +5,7 @@ import axios from "axios";
 import { LoginContext } from "../components/LoginContext";
 import { IdContext } from "../components/IdContext";
 import Navbar from "../components/Navbar";
+import ExpertNavbar from "../components/ExpertNavbar";
 
 const Review = () => {
   let { loginData, setLoginData } = useContext(LoginContext);
@@ -14,6 +15,7 @@ const Review = () => {
   setIdData(id);
 
   var address = process.env.REACT_APP_IP_ADDRESS;
+  let expert = sessionStorage.getItem("expertLogin");
 
   useEffect(() => {
     var fetchData = async () => {
@@ -22,15 +24,14 @@ const Review = () => {
       setReview(data.data);
       setLoginData(data.data);
       console.clear();
-      // console.log(data.data);
-      // console.log(data);
     };
 
     fetchData();
   }, []);
   return (
     <div>
-      <Navbar />
+      {expert === "true" ? <ExpertNavbar /> : <Navbar />}
+
       <h1 className="text-center mt-3">Trainer Presentation Review</h1>
       <div className="row mt-4">
         <div className="col-2"></div>
@@ -38,7 +39,7 @@ const Review = () => {
           <table className="table table-striped table-hover border border-1">
             <thead>
               <tr>
-                <th>Id</th>
+                <th>Sl no</th>
                 <th>Subject</th>
                 <th>Topic</th>
                 <th>Score</th>
@@ -52,7 +53,7 @@ const Review = () => {
                   return (
                     <React.Fragment key={index}>
                       <tr>
-                        <td>{ele.reviewId}</td>
+                        <td>{index + 1}</td>
                         <td style={{ textTransform: "capitalize" }}>
                           {ele.reviewSubject.toLowerCase()}
                         </td>

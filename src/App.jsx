@@ -1,13 +1,11 @@
-import React, { useContext } from "react";
+import React from "react";
 import { GlobalProvider } from "./components/GlobalContext";
-import { LoginContext, LoginProvider } from "./components/LoginContext";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
 // ! Importing pages
 import Login from "./pages/Login";
 import AdminTable from "./pages/AdminTable";
-import IndividualTrainee from "./pages/IndividualTrainee";
 import PresentationRating from "./pages/PresentationRating";
 import Review from "./pages/Review";
 import Comments from "./pages/Comments";
@@ -24,8 +22,18 @@ import TraineeRating from "./pages/TraineeRating";
 import { RatingProvider } from "./components/RatingContext";
 import TraineeComments from "./pages/TraineeComments";
 import AdminDetails from "./pages/AdminDetails";
+import SignUpForAdmin from "./pages/SignUpForAdmin";
+import TraineeDetailsAdmin from "./pages/TraineeDetailsAdmin";
+import OngoingPresentation from "./pages/OngoingPresentation";
+import SummaryRating from "./pages/SummaryRating";
+import CommentsExperts from "./pages/ComentsExperts";
+import ExpertLanding from "./pages/expert/ExpertLanding";
+import TraineeExpertComments from "./pages/TraineeExpertComments";
 const App = () => {
-  var { loginData, setLoginData } = useContext(LoginContext);
+  let loginData = JSON.parse(localStorage.getItem("loginAdmin"));
+
+  // let traineeStatus = JSON.parse(localStorage.getItem("loginTrainee"));
+
   return (
     <GlobalProvider>
       <IdProvider>
@@ -35,6 +43,7 @@ const App = () => {
               <ToastContainer autoClose={2000} />
               <Routes>
                 <Route path="/" element={<Login />} />
+                //!ADMIN ROUTES
                 <Route
                   path="/adminLanding"
                   element={
@@ -43,20 +52,13 @@ const App = () => {
                     </Protected>
                   }
                 />
-                <Route path="/traineeLanding" element={<TraineeLanding />}>
-                  <Route
-                    path="traineeLanding/notification"
-                    element={<TraineeNotification />}
-                  />
-                  <Route
-                    path="traineeLanding/reviews"
-                    element={<TraineeReviews />}
-                  />
-                </Route>
-                <Route path="/traineeRating/:id" element={<TraineeRating />} />
                 <Route
-                  path="/traineeComments/:id"
-                  element={<TraineeComments />}
+                  path="/addTrainee"
+                  element={
+                    <Protected isLoggedIn={loginData}>
+                      <SignUpForAdmin />
+                    </Protected>
+                  }
                 />
                 <Route
                   path="/adminTable"
@@ -74,7 +76,7 @@ const App = () => {
                     </Protected>
                   }
                 />
-                <Route path="/individual/:id" element={<IndividualTrainee />} />
+                {/* <Route path="/individual/:id" element={<IndividualTrainee />} /> */}
                 <Route
                   path="/presentation/:id"
                   element={
@@ -123,6 +125,60 @@ const App = () => {
                     </Protected>
                   }
                 />
+                <Route
+                  path="/ratingSummary"
+                  element={
+                    <Protected isLoggedIn={loginData}>
+                      <SummaryRating />
+                    </Protected>
+                  }
+                />
+                <Route
+                  path="/commentsExpert"
+                  element={
+                    <Protected isLoggedIn={loginData}>
+                      <CommentsExperts />
+                    </Protected>
+                  }
+                />
+                <Route
+                  path="/traineeStatus"
+                  element={
+                    <Protected isLoggedIn={loginData}>
+                      <TraineeDetailsAdmin />
+                    </Protected>
+                  }
+                />
+                <Route
+                  path="/ongoingPres"
+                  element={
+                    <Protected isLoggedIn={loginData}>
+                      <OngoingPresentation />
+                    </Protected>
+                  }
+                />
+                //! TRAINEE ROUTES
+                <Route path="/traineeLanding" element={<TraineeLanding />}>
+                  <Route
+                    path="traineeLanding/notification"
+                    element={<TraineeNotification />}
+                  />
+                  <Route
+                    path="traineeLanding/reviews"
+                    element={<TraineeReviews />}
+                  />
+                </Route>
+                <Route path="/traineeRating/:id" element={<TraineeRating />} />
+                <Route
+                  path="/traineeComments/:id"
+                  element={<TraineeComments />}
+                />
+                <Route
+                  path="/expertCommentsTrainee/:id"
+                  element={<TraineeExpertComments />}
+                />
+                //! Expert Routing section
+                <Route path="/expertLanding" element={<ExpertLanding />} />
               </Routes>
             </BrowserRouter>
           </div>

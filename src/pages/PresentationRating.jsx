@@ -20,14 +20,11 @@ const PresentationRating = () => {
     try {
       var fetchData = async () => {
         let { data } = await axios.get(`${address}/user/findById?userId=${id}`);
-        // let { data } = await axios.get(
-        //   `http://localhost:8080/user/findById?userId=${id}`
-        // );
+
         setIndividualData(data.data);
         setGlobalData(data.data);
-        console.log(globalData);
-        // console.log(data);
-        // console.log(individualData);
+        console.log(data.data);
+        sessionStorage.setItem("presComments", JSON.stringify(data.data));
       };
       fetchData();
     } catch (error) {
@@ -45,14 +42,11 @@ const PresentationRating = () => {
       presentationTopic: presentationTopic,
       user: individualData,
     };
-    // await axios.post(`http://localhost:8080/presentation`, payload);
     let { data } = await axios.post(`${address}/presentation`, payload);
-    // console.log("sucessfully data sent");
     toast.success("Success!", {
       className: "toastMessage",
     });
     setGlobalData(data);
-    // console.log(globalData);
     navigate("/voting");
   };
 
@@ -94,6 +88,7 @@ const PresentationRating = () => {
                 name="presentationSubject"
                 value={presentationSubject}
                 onChange={handleSubject}
+                required
               />
             </div>
             <div className="mb-3">
@@ -107,6 +102,7 @@ const PresentationRating = () => {
                 name="presentationTopic"
                 value={presentationTopic}
                 onChange={handleTopic}
+                required
               />
             </div>
             <button type="submit" className="btn btn-primary">

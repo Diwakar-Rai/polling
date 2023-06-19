@@ -5,16 +5,10 @@ import { FaUserCircle } from "react-icons/fa";
 import { toast } from "react-toastify";
 const Navbar = () => {
   var navigate = useNavigate();
-  const handleCalc = async () => {
-    var { data } = await axios.get("http://localhost:8080/review/calcReview");
-    console.log(data);
-    toast.success("Review Calculated", {
-      className: "toastMessage",
-    });
-  };
 
   const handleLogOut = () => {
     localStorage.removeItem("loginAdmin");
+    sessionStorage.removeItem("adminData");
     navigate("/");
   };
   return (
@@ -45,11 +39,29 @@ const Navbar = () => {
               </li>
               <li className="nav-item">
                 <Link
-                  className="nav-link"
-                  to="/adminLanding"
-                  onClick={handleCalc}
+                  className="nav-link active pe-4"
+                  aria-current="page"
+                  to="/addTrainee"
                 >
-                  Calculate Score
+                  Add Trainee
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link
+                  className="nav-link active pe-4"
+                  aria-current="page"
+                  to="/traineeStatus"
+                >
+                  Trainee Details
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link
+                  className="nav-link active pe-4"
+                  aria-current="page"
+                  to="/ongoingPres"
+                >
+                  Ongoing Presentation
                 </Link>
               </li>
             </ul>

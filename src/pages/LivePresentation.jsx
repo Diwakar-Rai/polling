@@ -11,7 +11,7 @@ const LivePresentation = () => {
     try {
       var { data } = await axios.get(`${address}/user/getPresenter
 `);
-      console.log(data);
+      // console.log(data);
       navigate(`/presentation/${data.data.userId}`);
     } catch (error) {
       console.log(error);

@@ -3,13 +3,21 @@ import Navbar from "../components/Navbar";
 import axios from "axios";
 import { LoginContext } from "../components/LoginContext";
 import { IdContext } from "../components/IdContext";
+import ExpertNavbar from "../components/ExpertNavbar";
 
 const Comments = () => {
   var { loginData, setLoginData } = useContext(LoginContext);
   var { idData, setIdData } = useContext(IdContext);
-  var [comment, setComment] = useState("");
+  var [commentState, setCommentState] = useState();
+  let [fetchedData, setFetchedData] = useState();
 
-  var address = process.env.REACT_APP_IP_ADDRESS;
+  let comments;
+  commentState === "expertComm"
+    ? (comments = fetchedData?.filter(ele => ele.role == "EXPERTISE"))
+    : (comments = fetchedData?.filter(ele => ele.role == "TRAINEE"));
+  let address = process.env.REACT_APP_IP_ADDRESS;
+
+  let expert = sessionStorage.getItem("expertLogin");
 
   useEffect(() => {
     var fetchData = async () => {
@@ -22,31 +30,56 @@ const Comments = () => {
         `${address}/notification/getComments?presenterId=${idData}`,
         payload
       );
-
-      setComment(data.data);
+      setFetchedData(data.data);
     };
     fetchData();
   }, []);
 
   return (
     <div>
-      <Navbar />
+      {expert === "true" ? <ExpertNavbar /> : <Navbar />}
       <h1 className="text-center mt-3">Feedback for Presentation</h1>
+
+      <div className="row">
+        <div className="col-3"></div>
+        <div className="col-3">
+          <button
+            className="btn btn-primary"
+            onClick={() => {
+              setCommentState("expertComm");
+            }}
+          >
+            Expert Comments
+          </button>
+        </div>
+        <div className="col-3">
+          <button
+            className="btn btn-primary"
+            onClick={() => {
+              setCommentState("traineeComm");
+            }}
+          >
+            Trainee Comments
+          </button>
+        </div>
+
+        <div className="col-3"></div>
+      </div>
       <div className="row mt-3">
         <div className="col-2"></div>
         <div className="col-8">
           <table className="table table-striped table-hover border border-1">
             <thead>
               <tr>
-                <th>Trainee Name</th>
+                <th>Name</th>
                 <th>Score</th>
                 <th>Feedback</th>
               </tr>
             </thead>
             <tbody>
-              {comment &&
-                comment.length &&
-                comment.map((ele, index) => {
+              {comments &&
+                comments.length &&
+                comments.map((ele, index) => {
                   return (
                     <React.Fragment key={index}>
                       <tr>

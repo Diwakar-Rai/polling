@@ -1,39 +1,27 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import Navbar from "../components/Navbar";
 import axios from "axios";
-import TraineeNavbar from "../components/TraineeNavbar";
+import { useParams } from "react-router-dom";
+const CommentsExperts = () => {
+  // var [comments, setComments] = useState("");
 
-const TraineeComments = () => {
-  var [comments, setComments] = useState("");
-  var { id } = useParams();
-  var address = process.env.REACT_APP_IP_ADDRESS;
-  useEffect(() => {
-    var fetchData = async () => {
-      try {
-        let { data } = await axios.get(
-          `${address}/notification/persenterFeedBack?reviewId=${id}`
-        );
-        console.log("presenter feedback", data);
-        setComments(data.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchData();
-  }, []);
+  let expComments = JSON.parse(sessionStorage.getItem("presComm"));
+  // var address = process.env.REACT_APP_IP_ADDRESS;
+  let comments = expComments.exprtiseComments;
   return (
     <div>
-      <TraineeNavbar />
-      <h1 className="text-center mt-2">Comments</h1>
+      <Navbar />
 
-      <div className="row mt-3">
+      <h1 className="text-center">Expert Comments</h1>
+      <div className="row">
         <div className="col-2"></div>
         <div className="col-8">
           <table className="table table-striped table-hover border border-1">
             <thead>
               <tr>
-                <th>Score</th>
-                <th>Comments</th>
+                <th>Expert Name</th>
+                <th>Expert Score</th>
+                <th>Expert Comment</th>
               </tr>
             </thead>
             <tbody>
@@ -42,6 +30,7 @@ const TraineeComments = () => {
                   return (
                     <React.Fragment key={index}>
                       <tr>
+                        <td>{ele.voterName}</td>
                         <td>{ele.score}</td>
                         <td>{ele.comment}</td>
                       </tr>
@@ -49,7 +38,7 @@ const TraineeComments = () => {
                   );
                 })
               ) : (
-                <h5>No data to display</h5>
+                <h1>No Data to display</h1>
               )}
             </tbody>
           </table>
@@ -60,4 +49,4 @@ const TraineeComments = () => {
   );
 };
 
-export default TraineeComments;
+export default CommentsExperts;

@@ -3,19 +3,17 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { LoginContext } from "../components/LoginContext";
 import Navbar from "./../components/Navbar";
+import ExpertNavbar from "../components/ExpertNavbar";
 const AdminTable = () => {
   let [allUserData, setAllUserData] = useState();
-  // let { loginData, setLoginData } = useContext(LoginContext);
-
+  let expert = sessionStorage.getItem("expertLogin");
   var address = process.env.REACT_APP_IP_ADDRESS;
 
   useEffect(() => {
     var fetchData = async () => {
       try {
         let { data } = await axios.get(`${address}/user/getTrainees`);
-        // let { data } = await axios.get("http://localhost:8080/user/getTrainees");
         setAllUserData(data.data);
-        // console.log(data.data);
       } catch (error) {
         console.log(error);
       }
@@ -24,7 +22,7 @@ const AdminTable = () => {
   }, []);
   return (
     <div>
-      <Navbar />
+      {expert === "true" ? <ExpertNavbar /> : <Navbar />}
       <h1 className="text-center mt-3">Trainee Presentation Table</h1>
       <div className="row mt-5">
         <div className="col-2"></div>
@@ -48,14 +46,7 @@ const AdminTable = () => {
                         <td>{ele.userName}</td>
                         <td>{ele.userEmail}</td>
                         <td>{ele.userPhoneNumber}</td>
-                        {/* <td>
-                          <Link
-                            to={`/presentation/${ele.userId}`}
-                            className="btn btn-primary"
-                          >
-                            Assign Presentation
-                          </Link>
-                        </td> */}
+
                         <td>
                           <Link
                             to={`/review/${ele.userId}`}

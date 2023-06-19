@@ -5,19 +5,24 @@ import { Link, useNavigate } from "react-router-dom";
 import { RatingContext } from "../components/RatingContext";
 
 const TraineeNotification = () => {
-  var [notificationData, setNotificationData] = useState();
-  var { globalData, setGlobalData } = useContext(GlobalContext);
-  var { ratingData, setRatingData } = useContext(RatingContext);
+  let [notificationData, setNotificationData] = useState();
+  // let { globalData, setGlobalData } = useContext(GlobalContext);
+  let { ratingData, setRatingData } = useContext(RatingContext);
 
-  var address = process.env.REACT_APP_IP_ADDRESS;
-  console.log(globalData);
+  let address = process.env.REACT_APP_IP_ADDRESS;
+  let traineeId = JSON.parse(sessionStorage.getItem("traineeData"));
+  let expertId = JSON.parse(sessionStorage.getItem("expertData"));
+  let expert = sessionStorage.getItem("expertLogin");
+  // let id = localId.userId;
+  let id;
+  expert === "true" ? (id = expertId.userId) : (id = traineeId.userId);
   useEffect(() => {
     var fetchData = async () => {
       try {
-        let { data } = await axios.get(
-          `${address}/notification?userId=${globalData.data.userId}`
-        );
+        let { data } = await axios.get(`${address}/notification?userId=${id}`);
         setNotificationData(data.data);
+        localStorage.setItem("traineeData", JSON.stringify(data.data));
+        setRatingData(data.data);
       } catch (error) {
         console.log(error);
       }
@@ -40,8 +45,7 @@ const TraineeNotification = () => {
           </tr>
         </thead>
         <tbody>
-          {notificationData &&
-            notificationData.length &&
+          {notificationData && notificationData.length ? (
             notificationData.map((ele, index) => {
               var {
                 rattingDate,
@@ -51,7 +55,7 @@ const TraineeNotification = () => {
                 presentarName,
                 presentationStatus,
               } = ele;
-
+              // console.log(rattingId);
               return (
                 <React.Fragment key={index}>
                   <tr>
@@ -73,7 +77,10 @@ const TraineeNotification = () => {
                   </tr>
                 </React.Fragment>
               );
-            })}
+            })
+          ) : (
+            <h5>No data to display</h5>
+          )}
         </tbody>
       </table>
     </div>
