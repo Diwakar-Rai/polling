@@ -1,23 +1,20 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import Navbar from "./../components/Navbar";
-import "./MeterStyle.css";
+import axios from "axios";
+import { Link } from "react-router-dom";
 
-const SummaryRating = () => {
+const OngoingSummary = () => {
   let [ratingStatus, setRatingStatus] = useState(false);
   let [ratingData, setRatingData] = useState();
   let address = process.env.REACT_APP_IP_ADDRESS;
-  //   sessionStorage.setItem("presentationId", globalData.data.presentationId);
-  let presentData = JSON.parse(sessionStorage.getItem("presentationData"));
-  let id = presentData.presentationId;
+  // let presentData = JSON.parse(sessionStorage.getItem("presentationData"));
+  let id = JSON.parse(sessionStorage.getItem("onPresentationId"));
   useEffect(() => {
     let fetchData = async () => {
       let { data } = await axios.get(
         `${address}/review/reviewSummary?presentationId=${id}`
       );
       setRatingData(data.data);
-      console.log(ratingData);
       sessionStorage.setItem("presComm", JSON.stringify(data.data));
       setRatingStatus(true);
     };
@@ -312,4 +309,4 @@ const SummaryRating = () => {
   );
 };
 
-export default SummaryRating;
+export default OngoingSummary;

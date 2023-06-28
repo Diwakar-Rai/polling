@@ -1,23 +1,23 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import axios from "axios";
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import { Link } from "react-router-dom";
 
 const TraineeDetailsAdmin = () => {
-  // const [modal, setModal] = useState(false);
+  let [searchFilter, setSearchFilter] = useState("");
 
   var [traineeData, setTraineeData] = useState([]);
   var [id, setId] = useState("");
-  // var [status, setStatus] = useState("");
   var address = process.env.REACT_APP_IP_ADDRESS;
 
-  // const toggle = () => setModal(!modal);
+  let admin = localStorage.getItem("loginAdmin");
 
   useEffect(() => {
     var fetchData = async () => {
       try {
         let { data } = await axios.get(`${address}/user/findAllTrainees`);
         setTraineeData(data.data);
+        // console.log(data.data);
       } catch (error) {
         console.log(error);
       }
@@ -26,7 +26,6 @@ const TraineeDetailsAdmin = () => {
   }, []);
 
   var handleChange = async e => {
-    // toggle();
     var id = e.target.title;
     setId(id);
     var right = e.target.checked;
@@ -41,19 +40,7 @@ const TraineeDetailsAdmin = () => {
       var { data } = await axios.get(
         `${address}/user/changeStatus?userId=${id}&status=${right}`
       );
-      // console.log(data);
-      // if (data.status === 200) {
-      //   let traineeId = data.data.userId;
-      //   let trainee = traineeArray.filter((ele, index) => {
-      //     if (ele.userId === traineeId) {
-      //       return index;
-      //     }
-      //   });
-      //   console.log("beforeSplice", traineeArray);
-      //   traineeArray.splice(trainee, 1, data.data);
-      //   console.log("updated", traineeArray);
-      //   setTraineeData(traineeArray);
-      // }
+
       if (data.status === 200) {
         try {
           let { data } = await axios.get(`${address}/user/findAllTrainees`);
@@ -62,17 +49,44 @@ const TraineeDetailsAdmin = () => {
           console.log(error);
         }
       }
-      // window.location.reload();
     } catch (error) {
       console.log(error);
     }
   };
 
+  const handleSearch = e => {
+    setSearchFilter(e.target.value);
+  };
+
+  let trainee;
+  searchFilter === ""
+    ? (trainee = traineeData)
+    : (trainee = traineeData?.filter(ele =>
+        ele.userName.toLowerCase().includes(searchFilter.toLowerCase())
+      ));
+
   return (
     <div>
       <Navbar />
       <h1 className="text-center mt-3">Trainee Details</h1>
-
+      <div className="row">
+        <div className="col-2"></div>
+        <div className="col-4">
+          <div className="mb-3">
+            <label htmlFor="search" className="form-label">
+              Enter Trainee Name to search
+            </label>
+            <input
+              type="text"
+              className="form-control"
+              id="search"
+              onChange={handleSearch}
+            />
+          </div>
+        </div>
+        <div className="col-4"></div>
+        <div className="col-2"></div>
+      </div>
       <div className="row mt-3">
         <div className="col-2"></div>
         <div className="col-8">
@@ -87,14 +101,28 @@ const TraineeDetailsAdmin = () => {
               </tr>
             </thead>
             <tbody>
-              {traineeData &&
-                traineeData.length &&
-                traineeData.map((ele, index) => {
+              {trainee &&
+                trainee.length &&
+                trainee.map((ele, index) => {
                   return (
                     <React.Fragment key={index}>
                       <tr>
                         <td>{index + 1}</td>
-                        <td>{ele.userName}</td>
+                        <td>
+                          {admin === "true" ? (
+                            <Link
+                              to={`/particularTrainee/${ele.userId}`}
+                              className="text-dark"
+                              style={{
+                                fontWeight: "normal",
+                              }}
+                            >
+                              {ele.userName}
+                            </Link>
+                          ) : (
+                            ele.userName
+                          )}
+                        </td>
                         <td>{ele.userEmail}</td>
                         <td>{ele.userPhoneNumber}</td>
                         <td>
@@ -126,20 +154,6 @@ const TraineeDetailsAdmin = () => {
         </div>
         <div className="col-2"></div>
       </div>
-      {/* <Modal isOpen={modal} toggle={toggle}>
-        <ModalHeader toggle={toggle}>Modal title</ModalHeader>
-        <ModalBody>
-          Are you sure you want to change the status of the trainee.
-        </ModalBody>
-        <ModalFooter>
-          <Button color="primary" onClick={toggle}>
-            Yes
-          </Button>
-          <Button color="secondary" onClick={toggle}>
-            Cancel
-          </Button>
-        </ModalFooter>
-      </Modal> */}
     </div>
   );
 };

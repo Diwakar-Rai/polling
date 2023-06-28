@@ -5,12 +5,14 @@ import Navbar from "./../components/Navbar";
 
 const AssignPresentation = () => {
   var [assign, setAssign] = useState();
+  let [searchFilter, setSearchFilter] = useState("");
+
   var address = process.env.REACT_APP_IP_ADDRESS;
 
   useEffect(() => {
     try {
       var fetchData = async () => {
-        let { data } = await axios.get(`${address}/user/getTrainees`);
+        let { data } = await axios.get(`${address}/user/findTrainees`);
         setAssign(data.data);
         // console.log(data.data);
       };
@@ -20,10 +22,40 @@ const AssignPresentation = () => {
 
     fetchData();
   }, []);
+
+  const handleChange = e => {
+    setSearchFilter(e.target.value);
+  };
+
+  let trainee;
+  searchFilter === ""
+    ? (trainee = assign)
+    : (trainee = assign?.filter(ele =>
+        ele.userName.toLowerCase().includes(searchFilter)
+      ));
   return (
     <div>
       <Navbar />
       <h1 className="text-center">Assign Presentation to Trainee</h1>
+
+      <div className="row">
+        <div className="col-2"></div>
+        <div className="col-4">
+          <div className="mb-3">
+            <label htmlFor="search" className="form-label">
+              Enter Trainee Name to search
+            </label>
+            <input
+              type="text"
+              className="form-control"
+              id="search"
+              onChange={handleChange}
+            />
+          </div>
+        </div>
+        <div className="col-4"></div>
+        <div className="col-2"></div>
+      </div>
 
       <div className="row mt-3">
         <div className="col-2"></div>
@@ -33,18 +65,20 @@ const AssignPresentation = () => {
               <tr>
                 <th>Name</th>
                 <th>Email</th>
+                <th>Phone Number</th>
                 <th>Assign Presentation</th>
               </tr>
             </thead>
             <tbody>
-              {assign &&
-                assign.length &&
-                assign.map((ele, index) => {
+              {trainee &&
+                trainee.length &&
+                trainee.map((ele, index) => {
                   return (
                     <React.Fragment key={index}>
                       <tr>
                         <td>{ele.userName}</td>
                         <td>{ele.userEmail}</td>
+                        <td>{ele.userPhoneNumber}</td>
                         <td>
                           <Link
                             to={`/presentation/${ele.userId}`}

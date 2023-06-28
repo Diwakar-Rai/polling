@@ -3,11 +3,11 @@ import Navbar from "./../components/Navbar";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { GlobalContext } from "../components/GlobalContext";
+// import { GlobalContext } from "../components/GlobalContext";
 
 const OngoingPresentation = () => {
   let [ongoing, setOngoing] = useState([]);
-  let { globalData, setGlobalData } = useContext(GlobalContext);
+  // let { globalData, setGlobalData } = useContext(GlobalContext);
   let address = process.env.REACT_APP_IP_ADDRESS;
   let navigate = useNavigate();
   useEffect(() => {
@@ -16,7 +16,8 @@ const OngoingPresentation = () => {
         `${address}/presentation/onGoingPresentation`
       );
       setOngoing(data.data);
-      setGlobalData(data);
+      // setGlobalData(data);
+      // console.log(data.data);
     };
     fetchData();
   }, []);
@@ -32,7 +33,7 @@ const OngoingPresentation = () => {
       toast.success("Voting Stoped", {
         className: "toastMessage",
       });
-      // console.log(data);
+      console.log(data.data.presentationId);
     };
     fetchData();
   };
@@ -40,17 +41,8 @@ const OngoingPresentation = () => {
     e.stopPropagation();
     e.preventDefault();
 
-    sessionStorage.setItem("presentationId", e.target.title);
-    navigate("/ratingSummary");
-    // var fetchData = async () => {
-    //   let { data } = await axios.get(
-    //     `${address}/review/reviewSummary?presentationId=${id}`
-    //   );
-    //   toast.success("Rating Created", {
-    //     className: "toastMessage",
-    //   });
-    // };
-    // fetchData();
+    sessionStorage.setItem("onPresentationId", e.target.title);
+    navigate("/ratingSummaryOnGoing");
   };
   return (
     <div>

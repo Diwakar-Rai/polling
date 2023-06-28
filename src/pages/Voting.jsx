@@ -12,19 +12,19 @@ const Voting = () => {
 
   var [heading, setHeading] = useState("Presentation Ongoing");
 
-  console.log(globalData);
+  // console.log(globalData);
   const handleVotingStart = e => {
     e.preventDefault();
     e.stopPropagation();
     let time = sessionStorage.getItem("totalTime");
-    console.log(time);
+    // console.log(time);
     var fetchData = async () => {
       let { data } = await axios.get(
         `${address}/presentation/activate?presentationId=${globalData?.data?.presentationId}&presentationTime=${time}`
       );
 
       sessionStorage.setItem("presentationData", JSON.stringify(data.data));
-      console.log(sessionStorage);
+      // console.log(sessionStorage);
       setVotingStatus(true);
       setHeading("Voting Started");
       // console.log(data);

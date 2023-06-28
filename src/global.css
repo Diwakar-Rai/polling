@@ -3,6 +3,10 @@
   margin: 0;
   box-sizing: border-box;
 }
+body {
+  overflow-x: hidden;
+  /* background: radial-gradient(rgba(211, 211, 211, 0.469), aliceblue); */
+}
 
 ::-webkit-scrollbar {
   display: none;

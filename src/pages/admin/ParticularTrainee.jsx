@@ -1,47 +1,68 @@
-import React, { useContext, useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import axios from "axios";
-
-// import { LoginContext } from "../components/LoginContext";
-import { IdContext } from "../components/IdContext";
-import Navbar from "../components/Navbar";
-import ExpertNavbar from "../components/ExpertNavbar";
-import ImageDisplay from "../components/ImageDisplay";
-import GaugeChart from "react-gauge-chart";
-
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
-import TraineeGraph from "./trainee/TraineeGraph";
-
+import React, { useEffect, useState } from "react";
+import Navbar from "../../components/Navbar";
+import { useParams, Link } from "react-router-dom";
 import { BsGraphUp } from "react-icons/bs";
+import axios from "axios";
+import GaugeChart from "react-gauge-chart";
+import ImageDisplay from "../../components/ImageDisplay";
+import TraineeGraph from "../trainee/TraineeGraph";
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 
-const Review = () => {
-  // let { loginData, setLoginData } = useContext(LoginContext);
-  let { idData, setIdData } = useContext(IdContext);
-  var [review, setReview] = useState();
-  let [score, setScore] = useState();
+const ParticularTrainee = () => {
   let [searchFilter, setSearchFilter] = useState("");
-  let [traineeData, setTraineeData] = useState("");
+  let [traineeData, setTraineeData] = useState();
   let [graphData, setGraphData] = useState();
+  let [review, setReview] = useState();
+  let [score, setScore] = useState();
   let [popup, setPopup] = useState("");
   const [modal, setModal] = useState(false);
   const [modal2, setModal2] = useState(false);
 
+  let { id } = useParams();
+  sessionStorage.setItem("parID", JSON.stringify(id));
+  var address = process.env.REACT_APP_IP_ADDRESS;
+
   const toggle = () => setModal(!modal);
   const toggle2 = () => setModal2(!modal2);
 
-  var { id } = useParams();
-  sessionStorage.setItem("parID", JSON.stringify(id));
-  var address = process.env.REACT_APP_IP_ADDRESS;
-  let expert = sessionStorage.getItem("expertLogin");
+  //! API to get the user details
+  useEffect(() => {
+    let fetchData = async () => {
+      try {
+        let { data } = await axios.get(`${address}/user/findById?userId=${id}`);
+        setTraineeData(data.data);
+        setScore(data.data?.overallPerformance);
 
-  //! API to get the review detail
+        // console.log(traineeData);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchData();
+  }, [score]);
+
+  //! API to get the performance for the meters
+
+  useEffect(() => {
+    let fetchData = async () => {
+      let { data } = await axios.get(
+        `${address}/review/trainee_Performance?userId=${id}`
+      );
+      sessionStorage.setItem("graphData", JSON.stringify(data.data));
+      setGraphData(data.data);
+      //   console.log(graphData);
+    };
+    fetchData();
+  }, []);
+
+  //!API to get the review
   useEffect(() => {
     var fetchData = async () => {
       var { data } = await axios.get(`${address}/review?userId=${id}`);
 
       setReview(data.data);
       sessionStorage.setItem("loginData", JSON.stringify(data.data));
-      // console.log(data.data);
+      //   console.log(data.data)
     };
 
     fetchData();
@@ -61,37 +82,8 @@ const Review = () => {
       }
     };
     particularPres();
-    toggle2();
+    // toggle2();
   };
-
-  //! API to get the Trainee Details
-  useEffect(() => {
-    let fetchData = async () => {
-      try {
-        let { data } = await axios.get(`${address}/user/findById?userId=${id}`);
-        setTraineeData(data.data);
-        setScore(data.data?.overallPerformance);
-        // console.log(data.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchData();
-  }, [score]);
-
-  //! API to get the performance for the meters
-
-  useEffect(() => {
-    let fetchData = async () => {
-      let { data } = await axios.get(
-        `${address}/review/trainee_Performance?userId=${id}`
-      );
-      sessionStorage.setItem("graphData", JSON.stringify(data.data));
-      setGraphData(data.data);
-      // console.log(data.data);
-    };
-    fetchData();
-  }, []);
 
   const handleSearch = e => {
     setSearchFilter(e.target.value);
@@ -109,11 +101,8 @@ const Review = () => {
       ));
   return (
     <div>
-      {expert === "true" ? <ExpertNavbar /> : <Navbar />}
-
-      <h1 className="text-center mt-3 pb-3 border-bottom border-1 shadow-sm">
-        Trainer Presentation Review
-      </h1>
+      <Navbar />
+      <h1 className="text-center my-2">{`${traineeData?.userName}'s Details`}</h1>
       <div className="row mt-4 px-5">
         <div className="col-4">
           <div className="shadow rounded-4 pt-3">
@@ -128,15 +117,15 @@ const Review = () => {
             <div className="border-top border-1 pt-3 overflow-hidden">
               <div className="shadow-sm row p-1">
                 <div className="col-5 ps-4">Trainee Name</div>
-                <div className="col-7">{traineeData.userName}</div>
+                <div className="col-7">{traineeData?.userName}</div>
               </div>
               <div className="shadow-sm row p-1">
                 <div className="col-5 ps-4">Email</div>
-                <div className="col-7">{traineeData.userEmail}</div>
+                <div className="col-7">{traineeData?.userEmail}</div>
               </div>
               <div className="row p-1">
                 <div className="col-5 ps-4">Phone Number</div>
-                <div className="col-7">{traineeData.userPhoneNumber}</div>
+                <div className="col-7">{traineeData?.userPhoneNumber}</div>
               </div>
             </div>
           </div>
@@ -161,11 +150,17 @@ const Review = () => {
               Overall Rating: {traineeData?.overallPerformance}
             </h6>
             <button className="btn btn-primary w-100 mt-2" onClick={toggle}>
-              See Progress
+              Completed Presentations
             </button>
           </div>
         </div>
         <div className="col-8 shadow p-3 rounded-4">
+          <TraineeGraph graphData={graphData} />
+        </div>
+      </div>
+      <Modal isOpen={modal} toggle={toggle} size="lg">
+        <ModalHeader toggle={toggle}>All Presentation</ModalHeader>
+        <ModalBody>
           <div className="row">
             <div className="col-12">
               <div className="mb-3">
@@ -224,6 +219,7 @@ const Review = () => {
                               e.stopPropagation();
                               console.log(ele.reviewId);
                               handleClick(ele.reviewId);
+                              toggle2();
                             }}
                             style={{ cursor: "pointer" }}
                           />
@@ -234,22 +230,16 @@ const Review = () => {
                 })}
             </tbody>
           </table>
-        </div>
-        <Modal isOpen={modal} toggle={toggle}>
-          <ModalHeader toggle={toggle}>Trainee Statistics</ModalHeader>
-          <ModalBody>
-            <TraineeGraph graphData={graphData} />
-          </ModalBody>
-        </Modal>
-        <Modal isOpen={modal2} toggle={toggle2}>
-          <ModalHeader toggle={toggle2}>Trainee Statistics</ModalHeader>
-          <ModalBody>
-            <TraineeGraph graphData={popup} />
-          </ModalBody>
-        </Modal>
-      </div>
+        </ModalBody>
+      </Modal>
+      <Modal isOpen={modal2} toggle={toggle2}>
+        <ModalHeader toggle={toggle2}>Trainee Statistics</ModalHeader>
+        <ModalBody>
+          <TraineeGraph graphData={popup} />
+        </ModalBody>
+      </Modal>
     </div>
   );
 };
 
-export default Review;
+export default ParticularTrainee;

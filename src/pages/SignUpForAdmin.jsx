@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "./../components/Navbar";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -7,14 +7,21 @@ const SignUpForAdmin = () => {
   var [signUpData, setSignUpData] = useState({
     userName: "",
     userEmail: "",
-    userPassword: "",
     userPhoneNumber: "",
     notification: false,
     status: "ACTIVE",
     role: "",
   });
 
-  var { userName, userEmail, userPassword, userPhoneNumber } = signUpData;
+  // useEffect(() => {
+  //   if (exp === "TRAINEE") {
+  //     setUser("Trainee");
+  //   } else if (exp === "EXPERT") {
+  //     setUser("Expert");
+  //   }
+  // });
+
+  var { userName, userEmail, userPhoneNumber, role } = signUpData;
 
   var address = process.env.REACT_APP_IP_ADDRESS;
   var handleChange = e => {
@@ -31,13 +38,13 @@ const SignUpForAdmin = () => {
       toast.success("Trainee Added", {
         className: "toastMessage",
       });
+      console.log(data);
     } catch (error) {
       console.log(error);
     }
     setSignUpData({
       userName: "",
       userEmail: "",
-      userPassword: "",
       userPhoneNumber: "",
       notification: false,
       status: "ACTIVE",
@@ -47,14 +54,31 @@ const SignUpForAdmin = () => {
   return (
     <div>
       <Navbar />
-      <h1 className="text-center mt-4">Add Trainee</h1>
+      <h1 className="text-center mt-4">Add User</h1>
       <div className="row mt-3">
         <div className="col-2"></div>
         <div className="col-8">
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
+              <label htmlFor="role" className="form-label">
+                Select Role
+              </label>
+              <select
+                className="form-select"
+                name="role"
+                id="role"
+                value={role}
+                onChange={handleChange}
+                required
+              >
+                <option value="">Select a role</option>
+                <option value="TRAINEE">Trainee</option>
+                <option value="EXPERTISE">Expert</option>
+              </select>
+            </div>
+            <div className="mb-3">
               <label htmlFor="user" className="form-label">
-                Trainee Name
+                User Name
               </label>
               <input
                 type="text"
@@ -68,7 +92,7 @@ const SignUpForAdmin = () => {
             </div>
             <div className="mb-3">
               <label htmlFor="trainEmail" className="form-label">
-                Trainee Email
+                User Email
               </label>
               <input
                 type="email"
@@ -82,7 +106,7 @@ const SignUpForAdmin = () => {
             </div>
             <div className="mb-3">
               <label htmlFor="trainNum" className="form-label">
-                Trainee Phone Number
+                User Phone Number
               </label>
               <input
                 type="tel"
@@ -94,7 +118,7 @@ const SignUpForAdmin = () => {
                 required
               />
             </div>
-            <div className="mb-3">
+            {/* <div className="mb-3">
               <label htmlFor="trainPass" className="form-label">
                 Password
               </label>
@@ -107,21 +131,7 @@ const SignUpForAdmin = () => {
                 onChange={handleChange}
                 required
               />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="role" className="form-label">
-                Select Role
-              </label>
-              <select
-                className="form-select"
-                name="role"
-                id="role"
-                onChange={handleChange}
-              >
-                <option value="TRAINEE">Trainee</option>
-                <option value="EXPERT">Expert</option>
-              </select>
-            </div>
+            </div> */}
 
             <button type="submit" className="btn btn-primary">
               Submit

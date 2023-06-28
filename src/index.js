@@ -7,6 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "./global.css";
 import App from "./App";
 import { LoginProvider } from "./components/LoginContext";
+// let login = JSON.parse(localStorage.getItem("loginAdmin"));
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <LoginProvider>

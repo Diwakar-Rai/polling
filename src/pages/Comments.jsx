@@ -1,16 +1,19 @@
 import React, { useContext, useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import axios from "axios";
-import { LoginContext } from "../components/LoginContext";
 import { IdContext } from "../components/IdContext";
 import ExpertNavbar from "../components/ExpertNavbar";
 
 const Comments = () => {
-  var { loginData, setLoginData } = useContext(LoginContext);
-  var { idData, setIdData } = useContext(IdContext);
+  // var { loginData, setLoginData } = useContext(LoginContext);
+  // var { idData, setIdData } = useContext(IdContext);
   var [commentState, setCommentState] = useState();
   let [fetchedData, setFetchedData] = useState();
-
+  let id = JSON.parse(sessionStorage.getItem("parID"));
+  let loginData = JSON.parse(sessionStorage.getItem("loginData"));
+  // console.log(loginData);
+  let arrayIndex = JSON.parse(sessionStorage.getItem("arrayIndex"));
+  // console.log(arrayIndex);
   let comments;
   commentState === "expertComm"
     ? (comments = fetchedData?.filter(ele => ele.role == "EXPERTISE"))
@@ -18,19 +21,24 @@ const Comments = () => {
   let address = process.env.REACT_APP_IP_ADDRESS;
 
   let expert = sessionStorage.getItem("expertLogin");
+  // console.log(loginData);
 
   useEffect(() => {
     var fetchData = async () => {
-      var payload = {
-        presentationSubject: loginData[0].reviewSubject,
-        presentationTopic: loginData[0].reviewTopic,
-        presentationDay: loginData[0].reviewDate,
-      };
-      let { data } = await axios.post(
-        `${address}/notification/getComments?presenterId=${idData}`,
-        payload
-      );
-      setFetchedData(data.data);
+      try {
+        var payload = {
+          presentationSubject: loginData[arrayIndex].reviewSubject,
+          presentationTopic: loginData[arrayIndex].reviewTopic,
+          presentationDay: loginData[arrayIndex].reviewDate,
+        };
+        // console.log(payload);
+        let { data } = await axios.post(
+          `${address}/notification/getComments?presenterId=${id}`,
+          payload
+        );
+        setFetchedData(data.data);
+        // console.log(data.data);
+      } catch (error) {}
     };
     fetchData();
   }, []);

@@ -1,12 +1,8 @@
-import React, { useContext, useEffect, useState } from "react";
-import { GlobalContext } from "../components/GlobalContext";
-import axios from "axios";
+import React from "react";
+
 import Navbar from "../components/Navbar";
 
 const AdminDetails = () => {
-  // var [adminData, setAdminData] = useState("");
-  // var address = process.env.REACT_APP_IP_ADDRESS;
-
   let presentationData = JSON.parse(sessionStorage.getItem("presComm"));
   let adminData = presentationData.comments;
 

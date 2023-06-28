@@ -1,0 +1,61 @@
+.red::-webkit-meter-optimum-value {
+  background: linear-gradient(to right, red, orange);
+}
+
+.orange::-webkit-meter-optimum-value {
+  background: linear-gradient(to right, red, orange);
+}
+
+.yellow::-webkit-meter-optimum-value {
+  background: linear-gradient(to right, red, orange, yellow);
+}
+
+.lightgreen::-webkit-meter-optimum-value {
+  background: linear-gradient(to right, red, orange, yellow, lightgreen);
+}
+.green::-webkit-meter-optimum-value {
+  background: linear-gradient(to right, red, orange, yellow, lightgreen, green);
+}
+
+meter:hover {
+  height: 35px;
+  transition: 0.5s all ease;
+}
+
+meter {
+  position: relative;
+  transition: 0.5s all ease;
+  width: 0;
+  animation: totalWidth 1.5s ease forwards;
+}
+
+@keyframes totalWidth {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+meter:hover::after {
+  content: "Score: " attr(value);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: black;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: 0.5s all ease;
+}
+
+/* meter::after {
+  content: " ▼";
+  position: absolute;
+  bottom: -10px;
+  left: attr(value);
+  transform: translateX(-50%);
+  font-size: 14px;
+} */

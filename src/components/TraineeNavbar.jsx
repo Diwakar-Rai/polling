@@ -39,9 +39,11 @@ const TraineeNavbar = () => {
             </ul>
           </div>
           <div className="d-flex">
-            <FaUserCircle
-              style={{ fontSize: 40, color: "white", cursor: "pointer" }}
-            />
+            <Link to="/traineeDetails">
+              <FaUserCircle
+                style={{ fontSize: 40, color: "white", cursor: "pointer" }}
+              />
+            </Link>
 
             <button className="btn btn-danger mx-3" onClick={handleClick}>
               Logout

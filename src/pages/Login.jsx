@@ -27,7 +27,6 @@ const Login = () => {
         );
 
         setGlobalData(data);
-        debugger;
         if (data.data.role === "ADMIN") {
           localStorage.setItem("loginAdmin", true);
           sessionStorage.setItem("adminData", JSON.stringify(data.data));
