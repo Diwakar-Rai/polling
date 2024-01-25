@@ -15,7 +15,7 @@ const TraineeDetailsAdmin = () => {
   useEffect(() => {
     var fetchData = async () => {
       try {
-        let { data } = await axios.get(`${address}/user/findAllTrainees`);
+        let { data } = await axios.get(`${address}/user/allTrainee`);
         setTraineeData(data.data);
         // console.log(data.data);
       } catch (error) {
@@ -37,13 +37,13 @@ const TraineeDetailsAdmin = () => {
     }
 
     try {
-      var { data } = await axios.get(
-        `${address}/user/changeStatus?userId=${id}&status=${right}`
+      var { data } = await axios.put(
+        `${address}/user/changeStatus?traineeId=${id}&status=${right}`
       );
 
       if (data.status === 200) {
         try {
-          let { data } = await axios.get(`${address}/user/findAllTrainees`);
+          let { data } = await axios.get(`${address}/user/allTrainee`);
           setTraineeData(data.data);
         } catch (error) {
           console.log(error);
@@ -62,7 +62,7 @@ const TraineeDetailsAdmin = () => {
   searchFilter === ""
     ? (trainee = traineeData)
     : (trainee = traineeData?.filter(ele =>
-        ele.userName.toLowerCase().includes(searchFilter.toLowerCase())
+        ele.userFirstName.toLowerCase().includes(searchFilter.toLowerCase())
       ));
 
   return (
@@ -111,19 +111,22 @@ const TraineeDetailsAdmin = () => {
                         <td>
                           {admin === "true" ? (
                             <Link
-                              to={`/particularTrainee/${ele.userId}`}
+                              // to={`/particularTrainee/${ele.userId}`}
+                              to={`/${btoa("particularTrainee")}/${ele.userId}`}
                               className="text-dark"
                               style={{
                                 fontWeight: "normal",
                               }}
                             >
-                              {ele.userName}
+                              {ele.userFirstName}
                             </Link>
                           ) : (
                             ele.userName
                           )}
                         </td>
-                        <td>{ele.userEmail}</td>
+                        <td style={{ textTransform: "none" }}>
+                          {ele.userEmail}
+                        </td>
                         <td>{ele.userPhoneNumber}</td>
                         <td>
                           <div className="form-check form-switch">

@@ -1,13 +1,14 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
+
+import logo from "../assets/images/alphaWhite.png";
 const TraineeNavbar = () => {
-  let expert = sessionStorage.getItem("expertLogin");
+  let expert = JSON.parse(localStorage.getItem("expertLogin"));
   const navigate = useNavigate();
   const handleClick = () => {
     sessionStorage.removeItem("traineeData");
-    localStorage.removeItem("traineeData");
-    localStorage.removeItem("traineeLogin");
+    localStorage.clear();
     navigate("/");
   };
   return (
@@ -31,15 +32,33 @@ const TraineeNavbar = () => {
                 <Link
                   className="nav-link active pe-4"
                   aria-current="page"
-                  to={expert === "true" ? "/expertLanding" : "/traineeLanding"}
+                  to={
+                    expert === true
+                      ? `/${btoa("expertLanding")}`
+                      : `/${btoa("traineeLanding")}`
+                  }
                 >
-                  Home
+                  {/* Home */}
+                  <img
+                    src={logo}
+                    alt=""
+                    className="w-100"
+                    style={{ height: 35 }}
+                  />
                 </Link>
               </li>
             </ul>
           </div>
           <div className="d-flex">
-            <Link to="/traineeDetails">
+            <Link
+              // to="/traineeDetails"
+              // to={`/${btoa("traineeDetails")}`}
+              to={
+                expert === true
+                  ? `/${btoa("expertLanding")}`
+                  : `/${btoa("traineeDetails")}`
+              }
+            >
               <FaUserCircle
                 style={{ fontSize: 40, color: "white", cursor: "pointer" }}
               />

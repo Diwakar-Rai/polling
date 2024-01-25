@@ -7,10 +7,15 @@ import "react-toastify/dist/ReactToastify.css";
 import "./global.css";
 import App from "./App";
 import { LoginProvider } from "./components/LoginContext";
-// let login = JSON.parse(localStorage.getItem("loginAdmin"));
+import NotificationProvider from "./components/NotificationContext";
+import VotingStartProvider from "./components/VotingStartContext";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <LoginProvider>
-    <App />
+    {/* <NotificationProvider> */}
+    <VotingStartProvider>
+      <App />
+    </VotingStartProvider>
+    {/* </NotificationProvider> */}
   </LoginProvider>
 );

@@ -2,8 +2,6 @@ import React, { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 
-// import { LoginContext } from "../components/LoginContext";
-import { IdContext } from "../components/IdContext";
 import Navbar from "../components/Navbar";
 import ExpertNavbar from "../components/ExpertNavbar";
 import ImageDisplay from "../components/ImageDisplay";
@@ -15,8 +13,7 @@ import TraineeGraph from "./trainee/TraineeGraph";
 import { BsGraphUp } from "react-icons/bs";
 
 const Review = () => {
-  // let { loginData, setLoginData } = useContext(LoginContext);
-  let { idData, setIdData } = useContext(IdContext);
+  let [photo, setPhoto] = useState("");
   var [review, setReview] = useState();
   let [score, setScore] = useState();
   let [searchFilter, setSearchFilter] = useState("");
@@ -32,16 +29,22 @@ const Review = () => {
   var { id } = useParams();
   sessionStorage.setItem("parID", JSON.stringify(id));
   var address = process.env.REACT_APP_IP_ADDRESS;
-  let expert = sessionStorage.getItem("expertLogin");
+  let expert = JSON.parse(localStorage.getItem("expertLogin"));
 
   //! API to get the review detail
   useEffect(() => {
     var fetchData = async () => {
-      var { data } = await axios.get(`${address}/review?userId=${id}`);
+      try {
+        var { data } = await axios.get(
+          `${address}/presentation/allPresentation?prensenterId=${id}`
+        );
 
-      setReview(data.data);
-      sessionStorage.setItem("loginData", JSON.stringify(data.data));
-      // console.log(data.data);
+        setReview(data.data);
+        // sessionStorage.setItem("loginData", JSON.stringify(data.data));
+        // console.log(data.data);
+      } catch (error) {
+        console.log(error);
+      }
     };
 
     fetchData();
@@ -50,17 +53,8 @@ const Review = () => {
   //! function to get all the details of the particular presentation
 
   const handleClick = id => {
-    let particularPres = async () => {
-      try {
-        let { data } = await axios.get(
-          `${address}/review/presentationSummary?reviewId=${id}`
-        );
-        setPopup(data.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    particularPres();
+    let particular = review.find(ele => ele.presentationId === id);
+    setPopup(particular);
     toggle2();
   };
 
@@ -68,9 +62,10 @@ const Review = () => {
   useEffect(() => {
     let fetchData = async () => {
       try {
-        let { data } = await axios.get(`${address}/user/findById?userId=${id}`);
+        let { data } = await axios.get(`${address}/user/userId/${id}`);
         setTraineeData(data.data);
-        setScore(data.data?.overallPerformance);
+        setScore(data.data?.overAllUserScore);
+        setGraphData(data.data);
         // console.log(data.data);
       } catch (error) {
         console.log(error);
@@ -79,16 +74,12 @@ const Review = () => {
     fetchData();
   }, [score]);
 
-  //! API to get the performance for the meters
-
+  //!API to get the profile Picture
   useEffect(() => {
     let fetchData = async () => {
-      let { data } = await axios.get(
-        `${address}/review/trainee_Performance?userId=${id}`
-      );
-      sessionStorage.setItem("graphData", JSON.stringify(data.data));
-      setGraphData(data.data);
-      // console.log(data.data);
+      let { data } = await axios.get(`${address}/userProfile/userId/${id}`);
+      setPhoto(data.data);
+      // console.log(data);
     };
     fetchData();
   }, []);
@@ -102,14 +93,17 @@ const Review = () => {
     ? (rev = review)
     : (rev = review?.filter(
         ele =>
-          ele.reviewSubject
+          ele.presentationSubject
             .toLowerCase()
             .includes(searchFilter.toLowerCase()) ||
-          ele.reviewTopic.toLowerCase().includes(searchFilter.toLowerCase())
+          ele.presentationTopic
+            .toLowerCase()
+            .includes(searchFilter.toLowerCase())
       ));
+  // console.log(rev);
   return (
     <div>
-      {expert === "true" ? <ExpertNavbar /> : <Navbar />}
+      {expert === true ? <ExpertNavbar /> : <Navbar />}
 
       <h1 className="text-center mt-3 pb-3 border-bottom border-1 shadow-sm">
         Trainer Presentation Review
@@ -122,13 +116,15 @@ const Review = () => {
                 <FiEdit onClick={toggle} style={{ cursor: "pointer" }} />
               </div> */}
               <div className="rounded-circle overflow-hidden">
-                <ImageDisplay byteArray={traineeData?.phote?.userProfile} />
+                <ImageDisplay byteArray={photo?.userProfile} />
               </div>
             </div>
             <div className="border-top border-1 pt-3 overflow-hidden">
               <div className="shadow-sm row p-1">
                 <div className="col-5 ps-4">Trainee Name</div>
-                <div className="col-7">{traineeData.userName}</div>
+                <div className="col-7">
+                  {traineeData.userFirstName + traineeData.userLastName}
+                </div>
               </div>
               <div className="shadow-sm row p-1">
                 <div className="col-5 ps-4">Email</div>
@@ -147,7 +143,7 @@ const Review = () => {
                 <div className="col-9">
                   <h6 className="py-2">Total no of presentation</h6>
                 </div>
-                <div className="col-3">{traineeData?.totalPersentation}</div>
+                <div className="col-3">{review?.length}</div>
               </div>
             </div>
             <GaugeChart
@@ -158,7 +154,7 @@ const Review = () => {
               hideText={true}
             />
             <h6 className="text-center pb-5 border-bottom border-1">
-              Overall Rating: {traineeData?.overallPerformance}
+              Overall Rating: {traineeData?.overAllUserScore}
             </h6>
             <button className="btn btn-primary w-100 mt-2" onClick={toggle}>
               See Progress
@@ -194,24 +190,29 @@ const Review = () => {
               {rev &&
                 rev.length &&
                 rev?.map((ele, index) => {
+                  // console.log(ele.presentationId);
                   return (
                     <React.Fragment key={index}>
                       <tr>
                         <td style={{ textTransform: "capitalize" }}>
-                          {ele.reviewSubject.toLowerCase()}
+                          {ele.presentationSubject.toLowerCase()}
                         </td>
                         <td style={{ textTransform: "capitalize" }}>
-                          {ele.reviewTopic.toLowerCase()}
+                          {ele.presentationTopic.toLowerCase()}
                         </td>
-                        <td>{ele.reviewScore}</td>
-                        <td>{ele.reviewDate}</td>
+                        <td>{ele.overAllPresentationScore}</td>
+                        <td>{ele.presentationDate}</td>
                         <td>
                           <Link
                             onClick={e => {
                               e.stopPropagation();
-                              sessionStorage.setItem("arrayIndex", index);
+                              // sessionStorage.setItem("arrayIndex", index);
+                              localStorage.setItem(
+                                "presentationId",
+                                JSON.stringify(ele.presentationId)
+                              );
                             }}
-                            to={`/comments/${ele.id}`}
+                            to={`/${btoa("comments")}/${ele.presentationId}`}
                             className="btn btn-primary"
                           >
                             Feedbacks
@@ -222,8 +223,8 @@ const Review = () => {
                             className="fw-bold"
                             onClick={e => {
                               e.stopPropagation();
-                              console.log(ele.reviewId);
-                              handleClick(ele.reviewId);
+                              // console.log(ele.presentationId);
+                              handleClick(ele.presentationId);
                             }}
                             style={{ cursor: "pointer" }}
                           />

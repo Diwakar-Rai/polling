@@ -1,11 +1,27 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import Navbar from "../components/Navbar";
+import axios from "axios";
 
 const AdminDetails = () => {
-  let presentationData = JSON.parse(sessionStorage.getItem("presComm"));
-  let adminData = presentationData.comments;
+  let [adminData, setAdminData] = useState(null);
+  var address = process.env.REACT_APP_IP_ADDRESS;
+  let presentationId = localStorage.getItem("presentationId");
 
+  useEffect(() => {
+    var fetchData = async () => {
+      try {
+        let { data } = await axios.get(
+          `${address}/rating/presentationId/${presentationId}`
+        );
+        setAdminData(data.data.filter(ele => ele.voter.role === "TRAINEE"));
+        // console.log(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchData();
+  }, []);
   return (
     <div>
       <Navbar />
@@ -21,19 +37,21 @@ const AdminDetails = () => {
               </tr>
             </thead>
             <tbody>
-              {adminData &&
-                adminData.length &&
+              {adminData && adminData.length ? (
                 adminData.map((ele, index) => {
                   return (
                     <React.Fragment key={index}>
                       <tr>
-                        <td>{ele.voterName}</td>
-                        <td>{ele.score}</td>
-                        <td>{ele.comment}</td>
+                        <td>{ele.voter.userFirstName}</td>
+                        <td>{ele.overAllRatingScore}</td>
+                        <td>{ele.comments}</td>
                       </tr>
                     </React.Fragment>
                   );
-                })}
+                })
+              ) : (
+                <h5>No data to display</h5>
+              )}
             </tbody>
           </table>
         </div>

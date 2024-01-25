@@ -7,14 +7,16 @@ const TraineeComments = () => {
   var [comments, setComments] = useState("");
   var { id } = useParams();
   var address = process.env.REACT_APP_IP_ADDRESS;
+  // console.log(id);
   useEffect(() => {
     var fetchData = async () => {
       try {
         let { data } = await axios.get(
-          `${address}/notification/persenterFeedBack?reviewId=${id}`
+          // `${address}/rating/trainee/presentationId/${id}`
+          `${address}/rating/traineerating/presentationId/${id}`
         );
-        console.log("presenter feedback", data);
-        setComments(data.data);
+        setComments(data?.data?.filter(ele => ele?.role === "TRAINEE"));
+        // console.log(data);
       } catch (error) {
         console.log(error);
       }
@@ -42,8 +44,16 @@ const TraineeComments = () => {
                   return (
                     <React.Fragment key={index}>
                       <tr>
-                        <td>{ele.score}</td>
-                        <td>{ele.comment}</td>
+                        <td>{ele.overAllRatingScore}</td>
+                        <td>
+                          {ele.comments === null ? (
+                            <span style={{ color: "red" }}>
+                              No Comments Given
+                            </span>
+                          ) : (
+                            ele.comments
+                          )}
+                        </td>
                       </tr>
                     </React.Fragment>
                   );

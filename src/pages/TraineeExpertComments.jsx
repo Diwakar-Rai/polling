@@ -14,10 +14,11 @@ const TraineeExpertComments = () => {
     var fetchData = async () => {
       try {
         let { data } = await axios.get(
-          `${address}/notification/expertiseFeedBack?reviewId=${id}`
+          // `${address}/rating/presentationId/${id}`
+          `${address}/rating/traineerating/presentationId/${id}`
         );
-        console.log("Expert Feedback", data);
-        setComments(data.data);
+        // console.log("Expert Feedback", data);
+        setComments(data?.data?.filter(ele => ele?.role === "TRAINER"));
       } catch (error) {
         console.log(error);
       }
@@ -36,7 +37,7 @@ const TraineeExpertComments = () => {
           <table className="table table-striped table-hover border border-1">
             <thead>
               <tr>
-                <th>Expert Name</th>
+                {/* <th>Expert Name</th> */}
                 <th>Score</th>
                 <th>Comments</th>
               </tr>
@@ -47,9 +48,24 @@ const TraineeExpertComments = () => {
                   return (
                     <React.Fragment key={index}>
                       <tr>
-                        <td>{ele.voterName}</td>
-                        <td>{ele.score}</td>
-                        <td>{ele.comment}</td>
+                        {/* <td>
+                          {ele.voter.userFirstName +
+                            " " +
+                            ele.voter.userLastName ===
+                          null
+                            ? ""
+                            : ele.voter.userLastName}
+                        </td> */}
+                        <td>{ele.overAllRatingScore}</td>
+                        <td>
+                          {ele.comments === null ? (
+                            <span style={{ color: "red" }}>
+                              No comments given
+                            </span>
+                          ) : (
+                            ele.comments
+                          )}
+                        </td>
                       </tr>
                     </React.Fragment>
                   );

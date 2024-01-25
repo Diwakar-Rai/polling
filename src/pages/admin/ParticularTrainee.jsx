@@ -1,22 +1,28 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { BsGraphUp } from "react-icons/bs";
 import axios from "axios";
 import GaugeChart from "react-gauge-chart";
 import ImageDisplay from "../../components/ImageDisplay";
 import TraineeGraph from "../trainee/TraineeGraph";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import ExpertNavbar from "./../../components/ExpertNavbar";
 
 const ParticularTrainee = () => {
   let [searchFilter, setSearchFilter] = useState("");
   let [traineeData, setTraineeData] = useState();
   let [graphData, setGraphData] = useState();
   let [review, setReview] = useState();
-  let [score, setScore] = useState();
   let [popup, setPopup] = useState("");
+  let [score, setScore] = useState();
+  let [photo, setPhoto] = useState("");
   const [modal, setModal] = useState(false);
   const [modal2, setModal2] = useState(false);
+
+  let navigate = useNavigate();
+
+  let expert = JSON.parse(localStorage.getItem("expertLogin"));
 
   let { id } = useParams();
   sessionStorage.setItem("parID", JSON.stringify(id));
@@ -29,11 +35,12 @@ const ParticularTrainee = () => {
   useEffect(() => {
     let fetchData = async () => {
       try {
-        let { data } = await axios.get(`${address}/user/findById?userId=${id}`);
+        let { data } = await axios.get(`${address}/user/userId/${id}`);
         setTraineeData(data.data);
-        setScore(data.data?.overallPerformance);
+        setGraphData(data.data);
+        setScore(data?.data?.overAllUserScore);
 
-        // console.log(traineeData);
+        console.log(data.data);
       } catch (error) {
         console.log(error);
       }
@@ -41,30 +48,33 @@ const ParticularTrainee = () => {
     fetchData();
   }, [score]);
 
-  //! API to get the performance for the meters
-
+  //! API to get the profile picture
   useEffect(() => {
     let fetchData = async () => {
-      let { data } = await axios.get(
-        `${address}/review/trainee_Performance?userId=${id}`
-      );
-      sessionStorage.setItem("graphData", JSON.stringify(data.data));
-      setGraphData(data.data);
-      //   console.log(graphData);
+      try {
+        let { data } = await axios.get(`${address}/userProfile/userId/${id}`);
+        setPhoto(data.data);
+        // console.log(data.data);
+      } catch (error) {
+        console.log(error);
+      }
     };
     fetchData();
   }, []);
 
-  //!API to get the review
+  //!function to get all the presentation of a trainee
   useEffect(() => {
-    var fetchData = async () => {
-      var { data } = await axios.get(`${address}/review?userId=${id}`);
-
-      setReview(data.data);
-      sessionStorage.setItem("loginData", JSON.stringify(data.data));
-      //   console.log(data.data)
+    let fetchData = async () => {
+      try {
+        let { data } = await axios.get(
+          `${address}/presentation/allPresentation?prensenterId=${id}`
+        );
+        // console.log(data.data);
+        setReview(data.data);
+      } catch (error) {
+        console.log(error);
+      }
     };
-
     fetchData();
   }, []);
 
@@ -74,9 +84,25 @@ const ParticularTrainee = () => {
     let particularPres = async () => {
       try {
         let { data } = await axios.get(
-          `${address}/review/presentationSummary?reviewId=${id}`
+          // `${address}/review/presentationSummary?reviewId=${id}`
+          `${address}/rating/presentationId/${id}`
         );
-        setPopup(data.data);
+        let popObj = {
+          overallContentScore: data.data[0].contentScore,
+          overallVoiceModulationScore: data.data[0].voiceModulationScore,
+          overallConfidenceScore: data.data[0].confidenceScore,
+          overallEyeContactScore: data.data[0].eyeContactScore,
+          overallBodyLanguageScore: data.data[0].bodyLanguageScore,
+          overallInterationScore: data.data[0].interationScore,
+          overallUseageOfPropsScore: data.data[0].useageOfPropsScore,
+          overallCommunicationScore: data.data[0].communicationScore,
+          overallEnergyScore: data.data[0].energyScore,
+          overallLivelinessScore: data.data[0].livelinessScore,
+        };
+        // console.log(popObj);
+        // console.log(id);
+        // console.log(data);
+        setPopup(popObj);
       } catch (error) {
         console.log(error);
       }
@@ -101,8 +127,10 @@ const ParticularTrainee = () => {
       ));
   return (
     <div>
-      <Navbar />
-      <h1 className="text-center my-2">{`${traineeData?.userName}'s Details`}</h1>
+      {expert === true ? <ExpertNavbar /> : <Navbar />}
+      <h1 className="text-center my-2">{`${
+        traineeData?.userFirstName + " " + traineeData?.userLastName
+      }'s Details`}</h1>
       <div className="row mt-4 px-5">
         <div className="col-4">
           <div className="shadow rounded-4 pt-3">
@@ -111,21 +139,27 @@ const ParticularTrainee = () => {
                 <FiEdit onClick={toggle} style={{ cursor: "pointer" }} />
               </div> */}
               <div className="rounded-circle overflow-hidden">
-                <ImageDisplay byteArray={traineeData?.phote?.userProfile} />
+                <ImageDisplay byteArray={photo?.userProfile} />
               </div>
             </div>
             <div className="border-top border-1 pt-3 overflow-hidden">
               <div className="shadow-sm row p-1">
-                <div className="col-5 ps-4">Trainee Name</div>
-                <div className="col-7">{traineeData?.userName}</div>
+                <div className="col-4 ps-4">Trainee Name</div>
+                <div className="col-8">
+                  {traineeData?.userFirstName +
+                    " " +
+                    (traineeData?.userLastName === null
+                      ? ""
+                      : traineeData?.userLastName)}
+                </div>
               </div>
               <div className="shadow-sm row p-1">
-                <div className="col-5 ps-4">Email</div>
-                <div className="col-7">{traineeData?.userEmail}</div>
+                <div className="col-4 ps-4">Email</div>
+                <div className="col-8">{traineeData?.userEmail}</div>
               </div>
               <div className="row p-1">
-                <div className="col-5 ps-4">Phone Number</div>
-                <div className="col-7">{traineeData?.userPhoneNumber}</div>
+                <div className="col-4 ps-4">Phone Number</div>
+                <div className="col-8">{traineeData?.userPhoneNumber}</div>
               </div>
             </div>
           </div>
@@ -136,7 +170,7 @@ const ParticularTrainee = () => {
                 <div className="col-9">
                   <h6 className="py-2">Total no of presentation</h6>
                 </div>
-                <div className="col-3">{traineeData?.totalPersentation}</div>
+                <div className="col-3">{review?.length}</div>
               </div>
             </div>
             <GaugeChart
@@ -147,7 +181,7 @@ const ParticularTrainee = () => {
               hideText={true}
             />
             <h6 className="text-center pb-5 border-bottom border-1">
-              Overall Rating: {traineeData?.overallPerformance}
+              Overall Rating: {traineeData?.overAllUserScore}
             </h6>
             <button className="btn btn-primary w-100 mt-2" onClick={toggle}>
               Completed Presentations
@@ -193,32 +227,38 @@ const ParticularTrainee = () => {
                     <React.Fragment key={index}>
                       <tr>
                         <td style={{ textTransform: "capitalize" }}>
-                          {ele.reviewSubject.toLowerCase()}
+                          {ele.presentationSubject.toLowerCase()}
                         </td>
                         <td style={{ textTransform: "capitalize" }}>
-                          {ele.reviewTopic.toLowerCase()}
+                          {ele.presentationTopic.toLowerCase()}
                         </td>
-                        <td>{ele.reviewScore}</td>
-                        <td>{ele.reviewDate}</td>
+                        <td>{ele.overAllPresentationScore}</td>
+                        <td>{ele.presentationDate}</td>
                         <td>
-                          <Link
+                          <button
+                            // to={`/${btoa("comments")}/${ele.presentationId}`}
                             onClick={e => {
                               e.stopPropagation();
-                              sessionStorage.setItem("arrayIndex", index);
+                              localStorage.setItem(
+                                "presentationId",
+                                JSON.stringify(ele.presentationId)
+                              );
+                              navigate(
+                                `/${btoa("comments")}/${ele.presentationId}`
+                              );
                             }}
-                            to={`/comments/${ele.id}`}
                             className="btn btn-primary"
                           >
                             Feedbacks
-                          </Link>
+                          </button>
                         </td>
                         <td>
                           <BsGraphUp
                             className="fw-bold"
                             onClick={e => {
                               e.stopPropagation();
-                              console.log(ele.reviewId);
-                              handleClick(ele.reviewId);
+                              console.log(ele.presentationId);
+                              handleClick(ele.presentationId);
                               toggle2();
                             }}
                             style={{ cursor: "pointer" }}

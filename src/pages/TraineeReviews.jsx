@@ -1,19 +1,21 @@
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { GlobalContext } from "../components/GlobalContext";
 import { Link } from "react-router-dom";
 
 const TraineeReviews = () => {
   var [reviewData, setReviewData] = useState("");
 
-  let localId = JSON.parse(sessionStorage.getItem("traineeData"));
+  let localId = JSON.parse(localStorage.getItem("traineeData"));
   let id = localId.userId;
   var address = process.env.REACT_APP_IP_ADDRESS;
   useEffect(() => {
     var fetchData = async () => {
       try {
-        let { data } = await axios.get(`${address}/review?userId=${id}`);
+        let { data } = await axios.get(
+          `${address}/presentation/allPresentation?prensenterId=${id}`
+        );
         setReviewData(data.data);
+        // console.log(data);
       } catch (error) {
         console.log(error);
       }
@@ -24,8 +26,8 @@ const TraineeReviews = () => {
     <div className="mx-5">
       <h1 className="text-center">Reviews</h1>
       <div className="row">
-        <div className="col-2"></div>
-        <div className="col-8">
+        <div className="col-1"></div>
+        <div className="col-12">
           <table className="table table-striped table-hover border border-1">
             <thead>
               <tr>
@@ -39,25 +41,34 @@ const TraineeReviews = () => {
             <tbody>
               {reviewData && reviewData.length ? (
                 reviewData.map((ele, index) => {
+                  // console.log(ele.presentationId);
                   return (
                     <React.Fragment key={index}>
                       <tr>
                         <td>{index + 1}</td>
-                        <td>{ele.reviewSubject}</td>
-                        <td>{ele.reviewTopic}</td>
-                        <td>{ele.reviewScore}</td>
+                        <td style={{ width: "35%" }}>
+                          {ele.presentationSubject.toLowerCase()}
+                        </td>
+                        <td style={{ width: "35%" }}>
+                          {ele.presentationTopic.toLowerCase()}
+                        </td>
+                        <td>{ele.overAllPresentationScore}</td>
                         <td>
                           <Link
-                            to={`/traineeComments/${ele.reviewId}`}
+                            to={`/${btoa("traineeComments")}/${
+                              ele.presentationId
+                            }`}
                             className="btn btn-primary"
                           >
-                            Trainee Comments
+                            Trainee
                           </Link>
                           <Link
-                            to={`/expertCommentsTrainee/${ele.reviewId}`}
+                            to={`/${btoa("expertCommentsTrainee")}/${
+                              ele.presentationId
+                            }`}
                             className="btn btn-primary ms-2"
                           >
-                            Expert Comments
+                            Expert
                           </Link>
                         </td>
                       </tr>
@@ -70,7 +81,7 @@ const TraineeReviews = () => {
             </tbody>
           </table>
         </div>
-        <div className="col-2"></div>
+        <div className="col-1"></div>
       </div>
     </div>
   );

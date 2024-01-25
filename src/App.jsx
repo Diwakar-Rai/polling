@@ -1,4 +1,4 @@
-import React from "react";
+// import React, { useEffect, useState } from "react";
 import { GlobalProvider } from "./components/GlobalContext";
 import { BrowserRouter } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
@@ -9,7 +9,6 @@ import { IdProvider } from "./components/IdContext";
 import { RatingProvider } from "./components/RatingContext";
 
 const App = () => {
-  let loginData = true;
   return (
     <GlobalProvider>
       <IdProvider>
@@ -17,7 +16,7 @@ const App = () => {
           <div>
             <BrowserRouter>
               <ToastContainer autoClose={2000} />
-              <PageRoutes loginData={loginData} />
+              <PageRoutes />
             </BrowserRouter>
           </div>
         </RatingProvider>

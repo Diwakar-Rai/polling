@@ -12,7 +12,7 @@ const AssignPresentation = () => {
   useEffect(() => {
     try {
       var fetchData = async () => {
-        let { data } = await axios.get(`${address}/user/findTrainees`);
+        let { data } = await axios.get(`${address}/user/allActiveTrainee`);
         setAssign(data.data);
         // console.log(data.data);
       };
@@ -30,8 +30,11 @@ const AssignPresentation = () => {
   let trainee;
   searchFilter === ""
     ? (trainee = assign)
-    : (trainee = assign?.filter(ele =>
-        ele.userName.toLowerCase().includes(searchFilter)
+    : (trainee = assign?.filter(
+        ele =>
+          ele.userFirstName.toLowerCase().includes(searchFilter) ||
+          ele.userLastName.toLowerCase().includes(searchFilter) ||
+          ele.userEmail.toLowerCase().includes(searchFilter)
       ));
   return (
     <div>
@@ -43,7 +46,7 @@ const AssignPresentation = () => {
         <div className="col-4">
           <div className="mb-3">
             <label htmlFor="search" className="form-label">
-              Enter Trainee Name to search
+              Enter Trainee Name or email to search
             </label>
             <input
               type="text"
@@ -76,13 +79,22 @@ const AssignPresentation = () => {
                   return (
                     <React.Fragment key={index}>
                       <tr>
-                        <td>{ele.userName}</td>
+                        <td>
+                          {ele.userFirstName} {ele.userLastName}
+                        </td>
                         <td>{ele.userEmail}</td>
                         <td>{ele.userPhoneNumber}</td>
                         <td>
                           <Link
-                            to={`/presentation/${ele.userId}`}
+                            to={`/${btoa("presentation")}/${btoa(ele.userId)}`}
                             className="btn btn-primary"
+                            onClick={e => {
+                              e.stopPropagation();
+                              localStorage.setItem(
+                                "presentTrainee",
+                                JSON.stringify(ele)
+                              );
+                            }}
                           >
                             Assign
                           </Link>

@@ -1,13 +1,13 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
+import logo from "../assets/images/alphaWhite.png";
 const ExpertNavbar = () => {
   const navigate = useNavigate();
   const handleClick = () => {
     sessionStorage.removeItem("expertData");
     sessionStorage.removeItem("expertLogin");
-    localStorage.removeItem("loginAdmin");
-    localStorage.removeItem("traineeData");
+    localStorage.clear();
     navigate("/");
   };
   return (
@@ -31,9 +31,15 @@ const ExpertNavbar = () => {
                 <Link
                   className="nav-link active pe-4"
                   aria-current="page"
-                  to="/expertLanding"
+                  // to="/expertLanding"
+                  to={`/${btoa("expertLanding")}`}
                 >
-                  Home
+                  <img
+                    src={logo}
+                    alt=""
+                    style={{ height: 35 }}
+                    className="w-100"
+                  />
                 </Link>
               </li>
             </ul>

@@ -12,11 +12,28 @@ const TraineeRating = () => {
   var { id } = useParams();
   var navigate = useNavigate();
   var address = process.env.REACT_APP_IP_ADDRESS;
+  // console.log(ratingData);
+  let expert = JSON.parse(localStorage.getItem("expertLogin"));
+  let userData = JSON.parse(localStorage.getItem("traineeData"));
+  let expertData = JSON.parse(localStorage.getItem("expertData"));
+  let voterId;
+  if (expert) {
+    voterId = expertData.userId;
+  } else {
+    voterId = userData.userId;
+  }
 
-  let expert = sessionStorage.getItem("expertLogin");
+  let presentation = JSON.parse(localStorage.getItem("presentation"));
+  // console.log(presentation);
+  // let presentationId = JSON.parse(localStorage.getItem("presentationId"));
+  let presentationId = presentation?.presentationId;
+  // console.log(presentationId);
+  // let allNotification = JSON.parse(localStorage.getItem("everyNotification"));
+  // let presentationIndex = JSON.parse(localStorage.getItem("presentationIndex"));
 
   useEffect(() => {
     setTraineeRating({ ...ratingData[id] });
+    // setTraineeRating(...allNotification[presentationIndex]);
   }, []);
 
   const handleChange = e => {
@@ -28,22 +45,34 @@ const TraineeRating = () => {
   const handleSubmit = async e => {
     e.preventDefault();
     try {
-      var { data } = await axios.post(`${address}/notification`, traineeRating);
+      var { data } = await axios.put(
+        `${address}/rating/presentationId/${presentationId}/voterId/${voterId}`,
+        traineeRating
+      );
       toast.success("Vote submitted", {
         className: "toastMessage",
       });
-      console.log(data);
-      navigate(expert === "true" ? "/expertLanding" : "/traineeLanding");
+      // console.log(traineeRating);
+      // console.log(data);
+      navigate(
+        expert === true
+          ? `/${btoa("expertLanding")}`
+          : `/${btoa("traineeLanding")}`
+      );
     } catch (error) {
       console.log(error);
       alert("voting closed");
-      navigate("/traineeLanding");
+      navigate(
+        expert === true
+          ? `/${btoa("expertLanding")}`
+          : `/${btoa("traineeLanding")}`
+      );
     }
   };
 
   return (
     <div>
-      {expert === "true" ? <ExpertNavbar /> : <TraineeNavbar />}
+      {expert === true ? <ExpertNavbar /> : <TraineeNavbar />}
       <h1 className="text-center mt-3">Rate the Presentation</h1>
       <div className="row">
         <div className="col-2"></div>
@@ -58,7 +87,7 @@ const TraineeRating = () => {
                 className="form-control"
                 id="trainer"
                 name="voterName"
-                value={traineeRating?.presentarName}
+                value={presentation?.presenter.userFirstName}
                 onChange={handleChange}
                 readOnly
               />
@@ -72,7 +101,7 @@ const TraineeRating = () => {
                 className="form-control"
                 id="subject"
                 name="rattingSubject"
-                value={traineeRating?.rattingSubject}
+                value={presentation?.presentationSubject}
                 onChange={handleChange}
                 readOnly
               />
@@ -86,7 +115,7 @@ const TraineeRating = () => {
                 className="form-control"
                 id="topic"
                 name="rattingTopic"
-                value={traineeRating?.rattingTopic}
+                value={presentation?.presentationTopic}
                 onChange={handleChange}
                 readOnly
               />
@@ -880,11 +909,13 @@ const TraineeRating = () => {
                 className="form-control"
                 id="comment"
                 rows="3"
-                name="commits"
+                name="comments"
                 value={traineeRating?.commits}
                 onChange={handleChange}
                 minLength="20"
                 maxLength="700"
+                pattern="^(?!.*\s{2})[\s\S]*$"
+                title="Please avoid using multiple consecutive spaces."
                 required
               ></textarea>
             </div>

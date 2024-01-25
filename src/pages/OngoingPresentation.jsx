@@ -1,48 +1,47 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "./../components/Navbar";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-// import { GlobalContext } from "../components/GlobalContext";
+import { over } from "stompjs";
+import SockJS from "sockjs-client";
 
 const OngoingPresentation = () => {
   let [ongoing, setOngoing] = useState([]);
-  // let { globalData, setGlobalData } = useContext(GlobalContext);
   let address = process.env.REACT_APP_IP_ADDRESS;
   let navigate = useNavigate();
+
+  const socket = new SockJS(`${address}/stomp-endpoint`);
+  const stompClient = over(socket);
   useEffect(() => {
     let fetchData = async () => {
       let { data } = await axios.get(
         `${address}/presentation/onGoingPresentation`
       );
       setOngoing(data.data);
-      // setGlobalData(data);
-      // console.log(data.data);
     };
     fetchData();
   }, []);
 
   const handleClick = e => {
+    e.preventDefault();
     e.stopPropagation();
     let id = e.target.title;
-    e.preventDefault();
-    var fetchData = async () => {
-      let { data } = await axios.get(
-        `${address}/presentation/deactivate?presentationId=${id}`
-      );
-      toast.success("Voting Stoped", {
-        className: "toastMessage",
-      });
-      console.log(data.data.presentationId);
-    };
-    fetchData();
+    e.target.disabled = true;
+    e.target.nextElementSibling.style.visibility = "visible";
+    stompClient.send(
+      `/presentation-ws/presentationId/${id}/status/INACTIVE`,
+      {},
+      "INACTIVE"
+    );
+    toast.success("Voting Stopped");
   };
+
   const handleRating = e => {
     e.stopPropagation();
-    e.preventDefault();
-
-    sessionStorage.setItem("onPresentationId", e.target.title);
-    navigate("/ratingSummaryOnGoing");
+    localStorage.setItem("presentationId", e.target.title);
+    // navigate("/ratingSummaryOnGoing");
+    navigate(`/${btoa("ratingSummaryOnGoing")}`);
   };
   return (
     <div>
@@ -70,11 +69,11 @@ const OngoingPresentation = () => {
                             </tr>
                             <tr>
                               <th>Presenter:</th>
-                              <td>{ele.user.userName}</td>
+                              <td>{ele.presenter.userFirstName}</td>
                             </tr>
                             <tr>
                               <th>Date: </th>
-                              <td>{ele.presentationDay}</td>
+                              <td>{ele.presentationDate}</td>
                             </tr>
                             <tr>
                               <div
@@ -95,6 +94,7 @@ const OngoingPresentation = () => {
                                   className="btn btn-primary"
                                   title={ele.presentationId}
                                   onClick={handleRating}
+                                  style={{ visibility: "hidden" }}
                                 >
                                   Get Rating
                                 </button>

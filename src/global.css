@@ -33,3 +33,14 @@ a {
 .livePresentationContainer {
   width: 100%;
 }
+input {
+  text-transform: none !important;
+}
+
+/* td {
+  text-transform: capitalize;
+} */
+
+[type="radio"] {
+  cursor: pointer;
+}

@@ -1,51 +1,46 @@
 import React, { useContext, useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import axios from "axios";
-import { IdContext } from "../components/IdContext";
 import ExpertNavbar from "../components/ExpertNavbar";
+import { useParams } from "react-router-dom";
+import { Colors } from "chart.js";
 
 const Comments = () => {
-  // var { loginData, setLoginData } = useContext(LoginContext);
-  // var { idData, setIdData } = useContext(IdContext);
   var [commentState, setCommentState] = useState();
   let [fetchedData, setFetchedData] = useState();
-  let id = JSON.parse(sessionStorage.getItem("parID"));
-  let loginData = JSON.parse(sessionStorage.getItem("loginData"));
+  // let loginData = JSON.parse(sessionStorage.getItem("loginData"));
   // console.log(loginData);
-  let arrayIndex = JSON.parse(sessionStorage.getItem("arrayIndex"));
+  // let arrayIndex = JSON.parse(sessionStorage.getItem("arrayIndex"));
   // console.log(arrayIndex);
+
+  let presentationId = JSON.parse(localStorage.getItem("presentationId"));
   let comments;
   commentState === "expertComm"
-    ? (comments = fetchedData?.filter(ele => ele.role == "EXPERTISE"))
-    : (comments = fetchedData?.filter(ele => ele.role == "TRAINEE"));
+    ? (comments = fetchedData?.filter(ele => ele.voter.role == "TRAINER"))
+    : (comments = fetchedData?.filter(ele => ele.voter.role == "TRAINEE"));
   let address = process.env.REACT_APP_IP_ADDRESS;
 
-  let expert = sessionStorage.getItem("expertLogin");
+  let expert = JSON.parse(localStorage.getItem("expertLogin"));
   // console.log(loginData);
 
   useEffect(() => {
     var fetchData = async () => {
       try {
-        var payload = {
-          presentationSubject: loginData[arrayIndex].reviewSubject,
-          presentationTopic: loginData[arrayIndex].reviewTopic,
-          presentationDay: loginData[arrayIndex].reviewDate,
-        };
-        // console.log(payload);
-        let { data } = await axios.post(
-          `${address}/notification/getComments?presenterId=${id}`,
-          payload
+        let { data } = await axios.get(
+          `${address}/rating/presentationId/${presentationId}`
         );
         setFetchedData(data.data);
-        // console.log(data.data);
-      } catch (error) {}
+        // console.log(data);
+      } catch (error) {
+        console.log(error);
+      }
     };
     fetchData();
   }, []);
 
   return (
     <div>
-      {expert === "true" ? <ExpertNavbar /> : <Navbar />}
+      {expert === true ? <ExpertNavbar /> : <Navbar />}
       <h1 className="text-center mt-3">Feedback for Presentation</h1>
 
       <div className="row">
@@ -85,19 +80,33 @@ const Comments = () => {
               </tr>
             </thead>
             <tbody>
-              {comments &&
-                comments.length &&
+              {comments && comments.length ? (
                 comments.map((ele, index) => {
                   return (
                     <React.Fragment key={index}>
                       <tr>
-                        <td>{ele.voterName}</td>
-                        <td>{ele.score}</td>
-                        <td>{ele.comment}</td>
+                        <td>{ele.voter.userFirstName}</td>
+                        <td>
+                          {ele.overAllRatingScore === 0
+                            ? "--"
+                            : ele.overAllRatingScore}
+                        </td>
+                        <td>
+                          {ele.comments === null ? (
+                            <span style={{ color: "red" }}>
+                              No comments given
+                            </span>
+                          ) : (
+                            ele.comments
+                          )}
+                        </td>
                       </tr>
                     </React.Fragment>
                   );
-                })}
+                })
+              ) : (
+                <h3>No Data to display</h3>
+              )}
             </tbody>
           </table>
         </div>

@@ -12,10 +12,12 @@ const LivePresentation = () => {
 
   const handleClick = async () => {
     try {
-      var { data } = await axios.get(`${address}/user/getPresenter
+      var { data } = await axios.get(`${address}/user/getRandomTrainee
 `);
       // console.log(data);
-      navigate(`/presentation/${data.data.userId}`);
+      localStorage.setItem("presentTrainee", JSON.stringify(data.data));
+      let id = btoa(data.data.userId);
+      navigate(`/${btoa("presentation")}/${id}`);
     } catch (error) {
       console.log(error);
     }
@@ -60,7 +62,9 @@ const LivePresentation = () => {
                 <FaUserTie style={{ paddingBottom: 20 }} />
               </div>
               <button className="btn btn-primary shadow-sm">
-                <Link to="/traineeAssign">Assign presentation</Link>
+                <Link to={`/${btoa("traineeAssign")}`}>
+                  Assign presentation
+                </Link>
               </button>
             </div>
           </section>

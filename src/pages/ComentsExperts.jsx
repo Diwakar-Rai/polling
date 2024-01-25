@@ -1,13 +1,27 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import axios from "axios";
-import { useParams } from "react-router-dom";
 const CommentsExperts = () => {
-  // var [comments, setComments] = useState("");
+  var [comments, setComments] = useState("");
 
-  let expComments = JSON.parse(sessionStorage.getItem("presComm"));
-  // var address = process.env.REACT_APP_IP_ADDRESS;
-  let comments = expComments.exprtiseComments;
+  // let expComments = JSON.parse(sessionStorage.getItem("presComm"))
+  var address = process.env.REACT_APP_IP_ADDRESS;
+  let presentationId = localStorage.getItem("presentationId");
+  useEffect(() => {
+    var fetchData = async () => {
+      try {
+        let { data } = await axios.get(
+          `${address}/rating/presentationId/${presentationId}`
+        );
+        setComments(data.data.filter(ele => ele.voter.role === "TRAINER"));
+        // console.log(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchData();
+  }, []);
+  // let comments = expComments.exprtiseComments;
   return (
     <div>
       <Navbar />
@@ -30,15 +44,17 @@ const CommentsExperts = () => {
                   return (
                     <React.Fragment key={index}>
                       <tr>
-                        <td>{ele.voterName}</td>
-                        <td>{ele.score}</td>
-                        <td>{ele.comment}</td>
+                        <td>
+                          {ele.voter.userFirstName + ele.voter.userLastName}
+                        </td>
+                        <td>{ele.overAllRatingScore}</td>
+                        <td>{ele.comments}</td>
                       </tr>
                     </React.Fragment>
                   );
                 })
               ) : (
-                <h1>No Data to display</h1>
+                <h5>No Data to display</h5>
               )}
             </tbody>
           </table>

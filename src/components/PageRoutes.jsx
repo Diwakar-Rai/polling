@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import AdminLanding from "../pages/AdminLanding";
 import SignUpForAdmin from "../pages/SignUpForAdmin";
@@ -26,15 +26,24 @@ import Login from "./../pages/Login";
 import TraineeDetails from "./../pages/TraineeDetails";
 import OngoingSummary from "../pages/OngoingSummary";
 import ParticularTrainee from "../pages/admin/ParticularTrainee";
+import NotAvailable from "./../pages/NotAvailable";
+import TraineePresOverall from "../pages/admin/TraineePresOverall";
 
-const PageRoutes = ({ loginData }) => {
+const PageRoutes = () => {
+  let loginData = JSON.parse(localStorage.getItem("loginAdmin"));
+
+  function changePath(a) {
+    return btoa(a);
+  }
+
   return (
     <div>
       <Routes>
         <Route path="/" element={<Login />} />
+        <Route path="*" element={<NotAvailable />} />
         //!ADMIN ROUTES
         <Route
-          path="/adminLanding"
+          path={`/${changePath("adminLanding")}`}
           element={
             <Protected isLoggedIn={loginData}>
               <AdminLanding />
@@ -42,7 +51,16 @@ const PageRoutes = ({ loginData }) => {
           }
         />
         <Route
-          path="/addTrainee"
+          path={`/${changePath("traineePresentationOverall")}`}
+          element={
+            <Protected isLoggedIn={loginData}>
+              <TraineePresOverall />
+            </Protected>
+          }
+        />
+        <Route
+          // path="/addTrainee"
+          path={`/${changePath("addTrainee")}`}
           element={
             <Protected isLoggedIn={loginData}>
               <SignUpForAdmin />
@@ -50,7 +68,8 @@ const PageRoutes = ({ loginData }) => {
           }
         />
         <Route
-          path="/adminTable"
+          // path="/adminTable"
+          path={`/${changePath("adminTable")}`}
           element={
             <Protected isLoggedIn={loginData}>
               <AdminTable />
@@ -58,7 +77,8 @@ const PageRoutes = ({ loginData }) => {
           }
         />
         <Route
-          path="/adminDetails"
+          // path="/adminDetails"
+          path={`/${changePath("adminDetails")}`}
           element={
             <Protected isLoggedIn={loginData}>
               <AdminDetails />
@@ -66,7 +86,8 @@ const PageRoutes = ({ loginData }) => {
           }
         />
         <Route
-          path="/particularTrainee/:id"
+          // path="/particularTrainee/:id"
+          path={`/${changePath("particularTrainee")}/:id`}
           element={
             <Protected isLoggedIn={loginData}>
               <ParticularTrainee />
@@ -75,7 +96,8 @@ const PageRoutes = ({ loginData }) => {
         />
         {/* <Route path="/individual/:id" element={<IndividualTrainee />} /> */}
         <Route
-          path="/presentation/:id"
+          // path="/presentation/:id"
+          path={`/${changePath("presentation")}/:id`}
           element={
             <Protected isLoggedIn={loginData}>
               <PresentationRating />
@@ -83,7 +105,8 @@ const PageRoutes = ({ loginData }) => {
           }
         />
         <Route
-          path="/review/:id"
+          // path="/review/:id"
+          path={`/${changePath("review")}/:id`}
           element={
             <Protected isLoggedIn={loginData}>
               <Review />
@@ -91,7 +114,8 @@ const PageRoutes = ({ loginData }) => {
           }
         />
         <Route
-          path="/comments/:id"
+          // path="/comments/:id"
+          path={`/${changePath("comments")}/:id`}
           element={
             <Protected isLoggedIn={loginData}>
               <Comments />
@@ -99,7 +123,8 @@ const PageRoutes = ({ loginData }) => {
           }
         />
         <Route
-          path="/livePresentation"
+          // path="/livePresentation"
+          path={`/${changePath("livePresentation")}`}
           element={
             <Protected isLoggedIn={loginData}>
               <LivePresentation />
@@ -107,7 +132,8 @@ const PageRoutes = ({ loginData }) => {
           }
         />
         <Route
-          path="/traineeAssign"
+          // path="/traineeAssign"
+          path={`/${changePath("traineeAssign")}`}
           element={
             <Protected isLoggedIn={loginData}>
               <AssignPresentation />
@@ -115,7 +141,8 @@ const PageRoutes = ({ loginData }) => {
           }
         />
         <Route
-          path="/voting"
+          // path="/voting"
+          path={`/${changePath("voting")}`}
           element={
             <Protected isLoggedIn={loginData}>
               <Voting />
@@ -123,7 +150,8 @@ const PageRoutes = ({ loginData }) => {
           }
         />
         <Route
-          path="/ratingSummary"
+          // path="/ratingSummary"
+          path={`/${changePath("ratingSummary")}`}
           element={
             <Protected isLoggedIn={loginData}>
               <SummaryRating />
@@ -131,7 +159,8 @@ const PageRoutes = ({ loginData }) => {
           }
         />
         <Route
-          path="/commentsExpert"
+          // path="/commentsExpert"
+          path={`/${changePath("commentsExpert")}`}
           element={
             <Protected isLoggedIn={loginData}>
               <CommentsExperts />
@@ -139,7 +168,8 @@ const PageRoutes = ({ loginData }) => {
           }
         />
         <Route
-          path="/traineeStatus"
+          // path="/traineeStatus"
+          path={`/${changePath("traineeStatus")}`}
           element={
             <Protected isLoggedIn={loginData}>
               <TraineeDetailsAdmin />
@@ -147,7 +177,8 @@ const PageRoutes = ({ loginData }) => {
           }
         />
         <Route
-          path="/ongoingPres"
+          // path="/ongoingPres"
+          path={`/${changePath("ongoingPres")}`}
           element={
             <Protected isLoggedIn={loginData}>
               <OngoingPresentation />
@@ -155,7 +186,8 @@ const PageRoutes = ({ loginData }) => {
           }
         />
         <Route
-          path="/ratingSummaryOnGoing"
+          // path="/ratingSummaryOnGoing"
+          path={`/${changePath("ratingSummaryOnGoing")}`}
           element={
             <Protected isLoggedIn={loginData}>
               <OngoingSummary />
@@ -163,23 +195,41 @@ const PageRoutes = ({ loginData }) => {
           }
         />
         //! TRAINEE ROUTES
-        <Route path="/traineeLanding" element={<TraineeLanding />}>
+        <Route path={`/${btoa("traineeLanding")}`} element={<TraineeLanding />}>
           <Route
-            path="traineeLanding/notification"
+            // path="traineeLanding/notification"
+            path={`${btoa("traineeLanding")}/${btoa("notification")}`}
             element={<TraineeNotification />}
           />
-          <Route path="traineeLanding/reviews" element={<TraineeReviews />} />
+          <Route
+            // path="traineeLanding/reviews"
+            path={`${btoa("traineeLanding")}/${btoa("reviews")}`}
+            element={<TraineeReviews />}
+          />
         </Route>
-        <Route path="/traineeRating/:id" element={<TraineeRating />} />
-        <Route path="/traineeComments/:id" element={<TraineeComments />} />
         <Route
-          path="/expertCommentsTrainee/:id"
+          // path="/traineeRating/:id"
+          path={`/${changePath("traineeRating")}/:id`}
+          element={<TraineeRating />}
+        />
+        <Route
+          // path="/traineeComments/:id"
+          path={`/${btoa("traineeComments")}/:id`}
+          element={<TraineeComments />}
+        />
+        <Route
+          // path="/expertCommentsTrainee/:id"
+          path={`/${btoa("expertCommentsTrainee")}/:id`}
           element={<TraineeExpertComments />}
         />
-        <Route path="/traineeDetails" element={<TraineeDetails />} />
+        <Route
+          // path="/traineeDetails"
+          path={`/${btoa("traineeDetails")}`}
+          element={<TraineeDetails />}
+        />
         //! Expert Routing section
         <Route
-          path="/expertLanding"
+          path={`/${btoa("expertLanding")}`}
           element={
             <Protected isLoggedIn={loginData}>
               <ExpertLanding />

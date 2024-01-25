@@ -8,16 +8,15 @@ const SummaryRating = () => {
   let [ratingStatus, setRatingStatus] = useState(false);
   let [ratingData, setRatingData] = useState();
   let address = process.env.REACT_APP_IP_ADDRESS;
-  //   sessionStorage.setItem("presentationId", globalData.data.presentationId);
-  let presentData = JSON.parse(sessionStorage.getItem("presentationData"));
-  let id = presentData.presentationId;
+
+  let id = JSON.parse(localStorage.getItem("presentationId"));
   useEffect(() => {
     let fetchData = async () => {
       let { data } = await axios.get(
-        `${address}/review/reviewSummary?presentationId=${id}`
+        `${address}/presentation?presentationId=${id}`
       );
       setRatingData(data.data);
-      console.log(ratingData);
+      // console.log(data);
       sessionStorage.setItem("presComm", JSON.stringify(data.data));
       setRatingStatus(true);
     };
@@ -53,46 +52,55 @@ const SummaryRating = () => {
                   <thead>
                     <tr>
                       <th>Presenter</th>
-                      <td>{ratingData?.presentarName}</td>
+                      <td>
+                        {ratingData?.presenter?.userFirstName +
+                          ratingData?.presenter.userLastName}
+                      </td>
                     </tr>
                     <tr>
                       <th>Subject</th>
-                      <td>{ratingData?.subject}</td>
+                      <td>{ratingData?.presentationSubject}</td>
                     </tr>
                     <tr>
                       <th>Topic</th>
-                      <td>{ratingData?.topic}</td>
+                      <td>{ratingData?.presentationTopic}</td>
                     </tr>
                     <tr>
                       <th>Presentation Time</th>
                       <td>{ratingData?.presentationTime}</td>
                     </tr>
                     <tr>
-                      <th>Trainee Rating</th>
+                      <th>Overall Rating</th>
                       <td style={{ fontWeight: "bold" }}>
-                        {ratingData?.score}
+                        {ratingData?.overAllPresentationScore}
                       </td>
                     </tr>
-                    <tr>
+                    {/* <tr>
                       <th>Expertise Rating</th>
                       <td style={{ fontWeight: "bold" }}>
                         {ratingData?.expertiseScore}
                       </td>
-                    </tr>
+                    </tr> */}
                     <tr>
-                      <th>No of Votes:</th>
-                      <th>
-                        {ratingData.votedCount}/{ratingData.totalVoter}
-                      </th>
+                      <th>Total no of Votes:</th>
+                      <th>{ratingData.voterCount}</th>
                     </tr>
                   </thead>
                 </table>
                 <h3 className="mt-5">Comments </h3>
                 <div className="d-flex align-items-center">
-                  <Link to="/adminDetails" className="btn btn-primary">
+                  <Link
+                    // to="/adminDetails"
+                    to={`/${btoa("adminDetails")}`}
+                    className="btn btn-primary"
+                  >
                     TraineeComments
                   </Link>
-                  <Link to="/commentsExpert" className="btn btn-primary mx-3">
+                  <Link
+                    // to="/commentsExpert"
+                    to={`/${btoa("commentsExpert")}`}
+                    className="btn btn-primary mx-3"
+                  >
                     Expert Comments
                   </Link>
                 </div>
@@ -107,9 +115,9 @@ const SummaryRating = () => {
                     <div className="col-8">
                       <meter
                         className={` ${getMeterColor(
-                          ratingData.performance.contentScore
+                          ratingData.overallContentScore
                         )}`}
-                        value={ratingData.performance.contentScore}
+                        value={ratingData.overallContentScore}
                         min="0"
                         max="5"
                       />
@@ -127,9 +135,9 @@ const SummaryRating = () => {
                     <div className="col-8">
                       <meter
                         className={` ${getMeterColor(
-                          ratingData.performance.voiceModulationScore
+                          ratingData.overallVoiceModulationScore
                         )}`}
-                        value={ratingData.performance.voiceModulationScore}
+                        value={ratingData.overallVoiceModulationScore}
                         min="0"
                         max="5"
                       />
@@ -147,9 +155,9 @@ const SummaryRating = () => {
                     <div className="col-8">
                       <meter
                         className={`${getMeterColor(
-                          ratingData.performance.confidenceScore
+                          ratingData.overallConfidenceScore
                         )}`}
-                        value={ratingData.performance.confidenceScore}
+                        value={ratingData.overallConfidenceScore}
                         min="0"
                         max="5"
                       />
@@ -167,9 +175,9 @@ const SummaryRating = () => {
                     <div className="col-8">
                       <meter
                         className={` ${getMeterColor(
-                          ratingData.performance.eyeContactScore
+                          ratingData.overallEyeContactScore
                         )}`}
-                        value={ratingData.performance.eyeContactScore}
+                        value={ratingData.overallEyeContactScore}
                         min="0"
                         max="5"
                       />
@@ -187,9 +195,9 @@ const SummaryRating = () => {
                     <div className="col-8">
                       <meter
                         className={` ${getMeterColor(
-                          ratingData.performance.bodyLanguageScore
+                          ratingData.overallBodyLanguageScore
                         )}`}
-                        value={ratingData.performance.bodyLanguageScore}
+                        value={ratingData.overallBodyLanguageScore}
                         min="0"
                         max="5"
                       />
@@ -207,9 +215,9 @@ const SummaryRating = () => {
                     <div className="col-8">
                       <meter
                         className={`${getMeterColor(
-                          ratingData.performance.interationScore
+                          ratingData.overallInterationScore
                         )}`}
-                        value={ratingData.performance.interationScore}
+                        value={ratingData.overallInterationScore}
                         min="0"
                         max="5"
                       />
@@ -227,9 +235,9 @@ const SummaryRating = () => {
                     <div className="col-8">
                       <meter
                         className={` ${getMeterColor(
-                          ratingData.performance.useageOfPropsScore
+                          ratingData.overallUseageOfPropsScore
                         )}`}
-                        value={ratingData.performance.useageOfPropsScore}
+                        value={ratingData.overallUseageOfPropsScore}
                         min="0"
                         max="5"
                       />
@@ -247,9 +255,9 @@ const SummaryRating = () => {
                     <div className="col-8">
                       <meter
                         className={` ${getMeterColor(
-                          ratingData.performance.communicationScore
+                          ratingData.overallCommunicationScore
                         )}`}
-                        value={ratingData.performance.communicationScore}
+                        value={ratingData.overallCommunicationScore}
                         min="0"
                         max="5"
                       />
@@ -267,9 +275,9 @@ const SummaryRating = () => {
                     <div className="col-8">
                       <meter
                         className={` ${getMeterColor(
-                          ratingData.performance.energyScore
+                          ratingData.overallEnergyScore
                         )}`}
-                        value={ratingData.performance.energyScore}
+                        value={ratingData.overallEnergyScore}
                         min="0"
                         max="5"
                       />
@@ -287,9 +295,9 @@ const SummaryRating = () => {
                     <div className="col-8">
                       <meter
                         className={` ${getMeterColor(
-                          ratingData.performance.livelinessScore
+                          ratingData.overallLivelinessScore
                         )}`}
-                        value={ratingData.performance.livelinessScore}
+                        value={ratingData.overallLivelinessScore}
                         min="0"
                         max="5"
                       />

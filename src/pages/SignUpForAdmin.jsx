@@ -5,23 +5,16 @@ import { toast } from "react-toastify";
 
 const SignUpForAdmin = () => {
   var [signUpData, setSignUpData] = useState({
-    userName: "",
+    userFirstName: "",
+    userLastName: "",
     userEmail: "",
     userPhoneNumber: "",
-    notification: false,
     status: "ACTIVE",
     role: "",
   });
 
-  // useEffect(() => {
-  //   if (exp === "TRAINEE") {
-  //     setUser("Trainee");
-  //   } else if (exp === "EXPERT") {
-  //     setUser("Expert");
-  //   }
-  // });
-
-  var { userName, userEmail, userPhoneNumber, role } = signUpData;
+  var { userFirstName, userLastName, userEmail, userPhoneNumber, role } =
+    signUpData;
 
   var address = process.env.REACT_APP_IP_ADDRESS;
   var handleChange = e => {
@@ -33,20 +26,20 @@ const SignUpForAdmin = () => {
   const handleSubmit = async e => {
     e.preventDefault();
     try {
-      let { data } = await axios.post(`${address}/user/saveUser`, payload);
+      let { data } = await axios.post(`${address}/user`, payload);
       // console.log(data);
-      toast.success("Trainee Added", {
+      toast.success("User Added", {
         className: "toastMessage",
       });
-      console.log(data);
+      // console.log(data);
     } catch (error) {
       console.log(error);
     }
     setSignUpData({
-      userName: "",
+      userFirstName: "",
+      userLastName: "",
       userEmail: "",
       userPhoneNumber: "",
-      notification: false,
       status: "ACTIVE",
       role: "",
     });
@@ -73,19 +66,33 @@ const SignUpForAdmin = () => {
               >
                 <option value="">Select a role</option>
                 <option value="TRAINEE">Trainee</option>
-                <option value="EXPERTISE">Expert</option>
+                <option value="TRAINER">Expert</option>
               </select>
             </div>
             <div className="mb-3">
-              <label htmlFor="user" className="form-label">
-                User Name
+              <label htmlFor="userFirstName" className="form-label">
+                First Name
               </label>
               <input
                 type="text"
                 className="form-control"
-                id="user"
-                name="userName"
-                value={userName}
+                id="userFirstName"
+                name="userFirstName"
+                value={userFirstName}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <label htmlFor="userLastName" className="form-label">
+                Last Name
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                id="userLastName"
+                name="userLastName"
+                value={userLastName}
                 onChange={handleChange}
                 required
               />
@@ -118,20 +125,6 @@ const SignUpForAdmin = () => {
                 required
               />
             </div>
-            {/* <div className="mb-3">
-              <label htmlFor="trainPass" className="form-label">
-                Password
-              </label>
-              <input
-                type="password"
-                className="form-control"
-                id="trainPass"
-                name="userPassword"
-                value={userPassword}
-                onChange={handleChange}
-                required
-              />
-            </div> */}
 
             <button type="submit" className="btn btn-primary">
               Submit

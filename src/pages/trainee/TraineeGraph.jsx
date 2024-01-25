@@ -1,13 +1,12 @@
-// import axios from "axios";
 import React from "react";
 import "../MeterStyle.css";
 
 const TraineeGraph = ({ graphData }) => {
   // let address = process.env.REACT_APP_IP_ADDRESS;
+  // console.log(graphData);
 
   //Function for getting meter color
   const getMeterColor = value => {
-    // console.log(value);
     if (value < 1.5) {
       return "red";
     } else if (value < 2.5) {
@@ -29,8 +28,8 @@ const TraineeGraph = ({ graphData }) => {
         </div>
         <div className="col-8">
           <meter
-            className={` ${getMeterColor(graphData?.contentScore)}`}
-            value={graphData?.contentScore}
+            className={` ${getMeterColor(graphData?.overallContentScore)}`}
+            value={graphData?.overallContentScore}
             min="0"
             max="5"
           />
@@ -47,8 +46,10 @@ const TraineeGraph = ({ graphData }) => {
         </div>
         <div className="col-8">
           <meter
-            className={` ${getMeterColor(graphData?.voiceModulationScore)}`}
-            value={graphData?.voiceModulationScore}
+            className={` ${getMeterColor(
+              graphData?.overallVoiceModulationScore
+            )}`}
+            value={graphData?.overallVoiceModulationScore}
             min="0"
             max="5"
           />
@@ -65,8 +66,8 @@ const TraineeGraph = ({ graphData }) => {
         </div>
         <div className="col-8">
           <meter
-            className={`${getMeterColor(graphData?.confidenceScore)}`}
-            value={graphData?.confidenceScore}
+            className={`${getMeterColor(graphData?.overallConfidenceScore)}`}
+            value={graphData?.overallConfidenceScore}
             min="0"
             max="5"
           />
@@ -83,8 +84,8 @@ const TraineeGraph = ({ graphData }) => {
         </div>
         <div className="col-8">
           <meter
-            className={` ${getMeterColor(graphData?.eyeContactScore)}`}
-            value={graphData?.eyeContactScore}
+            className={` ${getMeterColor(graphData?.overallEyeContactScore)}`}
+            value={graphData?.overallEyeContactScore}
             min="0"
             max="5"
           />
@@ -101,8 +102,8 @@ const TraineeGraph = ({ graphData }) => {
         </div>
         <div className="col-8">
           <meter
-            className={` ${getMeterColor(graphData?.bodyLanguageScore)}`}
-            value={graphData?.bodyLanguageScore}
+            className={` ${getMeterColor(graphData?.overallBodyLanguageScore)}`}
+            value={graphData?.overallBodyLanguageScore}
             min="0"
             max="5"
           />
@@ -119,8 +120,8 @@ const TraineeGraph = ({ graphData }) => {
         </div>
         <div className="col-8">
           <meter
-            className={`${getMeterColor(graphData?.interationScore)}`}
-            value={graphData?.interationScore}
+            className={`${getMeterColor(graphData?.overallInterationScore)}`}
+            value={graphData?.overallInterationScore}
             min="0"
             max="5"
           />
@@ -137,8 +138,10 @@ const TraineeGraph = ({ graphData }) => {
         </div>
         <div className="col-8">
           <meter
-            className={` ${getMeterColor(graphData?.useageOfPropsScore)}`}
-            value={graphData?.useageOfPropsScore}
+            className={` ${getMeterColor(
+              graphData?.overallUseageOfPropsScore
+            )}`}
+            value={graphData?.overallUseageOfPropsScore}
             min="0"
             max="5"
           />
@@ -155,8 +158,10 @@ const TraineeGraph = ({ graphData }) => {
         </div>
         <div className="col-8">
           <meter
-            className={` ${getMeterColor(graphData?.communicationScore)}`}
-            value={graphData?.communicationScore}
+            className={` ${getMeterColor(
+              graphData?.overallCommunicationScore
+            )}`}
+            value={graphData?.overallCommunicationScore}
             min="0"
             max="5"
           />
@@ -173,8 +178,8 @@ const TraineeGraph = ({ graphData }) => {
         </div>
         <div className="col-8">
           <meter
-            className={` ${getMeterColor(graphData?.energyScore)}`}
-            value={graphData?.energyScore}
+            className={` ${getMeterColor(graphData?.overallEnergyScore)}`}
+            value={graphData?.overallEnergyScore}
             min="0"
             max="5"
           />
@@ -191,8 +196,8 @@ const TraineeGraph = ({ graphData }) => {
         </div>
         <div className="col-8">
           <meter
-            className={` ${getMeterColor(graphData?.livelinessScore)}`}
-            value={graphData?.livelinessScore}
+            className={` ${getMeterColor(graphData?.overallLivelinessScore)}`}
+            value={graphData?.overallLivelinessScore}
             min="0"
             max="5"
           />

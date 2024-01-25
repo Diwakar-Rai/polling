@@ -13,7 +13,10 @@ const ExpertLanding = () => {
             <p>Click on the Button below to check latest presentation</p>
             <Link
               className="btn btn-primary px-5 py-3 w-100"
-              to="/traineeLanding/traineeLanding/notification"
+              // to="/traineeLanding/traineeLanding/notification"
+              to={`/${btoa("traineeLanding")}/${btoa("traineeLanding")}/${btoa(
+                "notification"
+              )}`}
             >
               Notifications
               {/* <MdAssignmentAdd style={{ fontSize: 30 }} /> */}
@@ -21,7 +24,11 @@ const ExpertLanding = () => {
           </div>
           <div className="col-4 bg-secondary-subtle mx-4 p-3 rounded rounded-2 shadow">
             <p>Click on the button below to check Completed Presentations</p>
-            <Link className="btn btn-primary px-5 py-3 w-100" to="/adminTable">
+            <Link
+              className="btn btn-primary px-5 py-3 w-100"
+              // to="/adminTable"
+              to={`/${btoa("adminTable")}`}
+            >
               Presentations Completed
               {/* <MdAssignmentTurnedIn style={{ fontSize: 30 }} /> */}
             </Link>

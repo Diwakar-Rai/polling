@@ -8,11 +8,12 @@ const OngoingSummary = () => {
   let [ratingData, setRatingData] = useState();
   let address = process.env.REACT_APP_IP_ADDRESS;
   // let presentData = JSON.parse(sessionStorage.getItem("presentationData"));
-  let id = JSON.parse(sessionStorage.getItem("onPresentationId"));
+  let id = JSON.parse(localStorage.getItem("presentationId"));
   useEffect(() => {
     let fetchData = async () => {
       let { data } = await axios.get(
-        `${address}/review/reviewSummary?presentationId=${id}`
+        // `${address}/review/reviewSummary?presentationId=${id}`
+        `${address}/presentation?presentationId=${id}`
       );
       setRatingData(data.data);
       sessionStorage.setItem("presComm", JSON.stringify(data.data));
@@ -50,15 +51,18 @@ const OngoingSummary = () => {
                   <thead>
                     <tr>
                       <th>Presenter</th>
-                      <td>{ratingData?.presentarName}</td>
+                      <td>
+                        {ratingData?.presenter?.userFirstName +
+                          ratingData?.presenter.userLastName}
+                      </td>
                     </tr>
                     <tr>
                       <th>Subject</th>
-                      <td>{ratingData?.subject}</td>
+                      <td>{ratingData?.presentationSubject}</td>
                     </tr>
                     <tr>
                       <th>Topic</th>
-                      <td>{ratingData?.topic}</td>
+                      <td>{ratingData?.presentationTopic}</td>
                     </tr>
                     <tr>
                       <th>Presentation Time</th>
@@ -67,7 +71,7 @@ const OngoingSummary = () => {
                     <tr>
                       <th>Trainee Rating</th>
                       <td style={{ fontWeight: "bold" }}>
-                        {ratingData?.score}
+                        {ratingData?.overAllPresentationScore}
                       </td>
                     </tr>
                     <tr>
@@ -86,10 +90,18 @@ const OngoingSummary = () => {
                 </table>
                 <h3 className="mt-5">Comments </h3>
                 <div className="d-flex align-items-center">
-                  <Link to="/adminDetails" className="btn btn-primary">
+                  <Link
+                    // to="/adminDetails"
+                    to={`/${btoa("adminDetails")}`}
+                    className="btn btn-primary"
+                  >
                     TraineeComments
                   </Link>
-                  <Link to="/commentsExpert" className="btn btn-primary mx-3">
+                  <Link
+                    // to="/commentsExpert"
+                    to={`/${btoa("commentsExpert")}`}
+                    className="btn btn-primary mx-3"
+                  >
                     Expert Comments
                   </Link>
                 </div>
@@ -104,9 +116,9 @@ const OngoingSummary = () => {
                     <div className="col-8">
                       <meter
                         className={` ${getMeterColor(
-                          ratingData.performance.contentScore
+                          ratingData.overallContentScore
                         )}`}
-                        value={ratingData.performance.contentScore}
+                        value={ratingData.overallContentScore}
                         min="0"
                         max="5"
                       />
@@ -124,9 +136,9 @@ const OngoingSummary = () => {
                     <div className="col-8">
                       <meter
                         className={` ${getMeterColor(
-                          ratingData.performance.voiceModulationScore
+                          ratingData.overallVoiceModulationScore
                         )}`}
-                        value={ratingData.performance.voiceModulationScore}
+                        value={ratingData.overallVoiceModulationScore}
                         min="0"
                         max="5"
                       />
@@ -144,9 +156,9 @@ const OngoingSummary = () => {
                     <div className="col-8">
                       <meter
                         className={`${getMeterColor(
-                          ratingData.performance.confidenceScore
+                          ratingData.overallConfidenceScore
                         )}`}
-                        value={ratingData.performance.confidenceScore}
+                        value={ratingData.overallConfidenceScore}
                         min="0"
                         max="5"
                       />
@@ -164,9 +176,9 @@ const OngoingSummary = () => {
                     <div className="col-8">
                       <meter
                         className={` ${getMeterColor(
-                          ratingData.performance.eyeContactScore
+                          ratingData.overallEyeContactScore
                         )}`}
-                        value={ratingData.performance.eyeContactScore}
+                        value={ratingData.overallEyeContactScore}
                         min="0"
                         max="5"
                       />
@@ -184,9 +196,9 @@ const OngoingSummary = () => {
                     <div className="col-8">
                       <meter
                         className={` ${getMeterColor(
-                          ratingData.performance.bodyLanguageScore
+                          ratingData.overallBodyLanguageScore
                         )}`}
-                        value={ratingData.performance.bodyLanguageScore}
+                        value={ratingData.overallBodyLanguageScore}
                         min="0"
                         max="5"
                       />
@@ -204,9 +216,9 @@ const OngoingSummary = () => {
                     <div className="col-8">
                       <meter
                         className={`${getMeterColor(
-                          ratingData.performance.interationScore
+                          ratingData.overallInterationScore
                         )}`}
-                        value={ratingData.performance.interationScore}
+                        value={ratingData.overallInterationScore}
                         min="0"
                         max="5"
                       />
@@ -224,9 +236,9 @@ const OngoingSummary = () => {
                     <div className="col-8">
                       <meter
                         className={` ${getMeterColor(
-                          ratingData.performance.useageOfPropsScore
+                          ratingData.overallUseageOfPropsScore
                         )}`}
-                        value={ratingData.performance.useageOfPropsScore}
+                        value={ratingData.overallUseageOfPropsScore}
                         min="0"
                         max="5"
                       />
@@ -244,9 +256,9 @@ const OngoingSummary = () => {
                     <div className="col-8">
                       <meter
                         className={` ${getMeterColor(
-                          ratingData.performance.communicationScore
+                          ratingData.overallCommunicationScore
                         )}`}
-                        value={ratingData.performance.communicationScore}
+                        value={ratingData.overallCommunicationScore}
                         min="0"
                         max="5"
                       />
@@ -264,9 +276,9 @@ const OngoingSummary = () => {
                     <div className="col-8">
                       <meter
                         className={` ${getMeterColor(
-                          ratingData.performance.energyScore
+                          ratingData.overallEnergyScore
                         )}`}
-                        value={ratingData.performance.energyScore}
+                        value={ratingData.overallEnergyScore}
                         min="0"
                         max="5"
                       />
@@ -284,9 +296,9 @@ const OngoingSummary = () => {
                     <div className="col-8">
                       <meter
                         className={` ${getMeterColor(
-                          ratingData.performance.livelinessScore
+                          ratingData.overallLivelinessScore
                         )}`}
-                        value={ratingData.performance.livelinessScore}
+                        value={ratingData.overallLivelinessScore}
                         min="0"
                         max="5"
                       />
